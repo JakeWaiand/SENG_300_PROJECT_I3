@@ -12,5 +12,6 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry excluding="com.thelocalmarketplace.hardware/|com.tdc/|com.jjjwelectronics/|powerutility/|simulation/|biz.rfid/" kind="src" path=""/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
