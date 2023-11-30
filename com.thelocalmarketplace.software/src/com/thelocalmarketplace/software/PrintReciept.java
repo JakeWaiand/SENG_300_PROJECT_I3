@@ -8,8 +8,33 @@ import com.jjjwelectronics.IDeviceListener;
 import com.jjjwelectronics.OverloadedDevice;
 import com.jjjwelectronics.printer.ReceiptPrinterListener;
 
-
 /*
+ * Kenny Zeng 30151985
+ * Tahamina Chowdhury 30140920
+ * Sneh Patel 30086076
+ * Jake Waiand 30179510
+ * Roko Condic 30185671
+ * Farouq Arafeh 30158214
+ * Dongwen Tian 30181813
+ * K M Chisty 30145123
+ * Mohammad Soomro 30130440
+ * Daniel Adebisi 30179418
+ * Eyuel Kahsay 30181884
+ * Fardin Rahman Sami 30172916
+ * Almik Biju 30170902
+ * Kourosh Malayeri 30174987
+ * Hasan Qasim 30164530
+ * Ariba Noman 30111428
+ * Kyuyop (Andrew) Park 10046592
+ * Jiaqi Wu 30172397
+ * Ludovik Chojnacki [uc number]
+ * Muhammad Niazi 3017777
+ * Firdovsi Aliyev 30178471
+ * Ratul Chakraborty [uc number]
+ * 
+ */
+
+/* USES ITERATION 2 CODE WRITTEN BY GROUP 21
 Kimih Yan 30160567
 Kenny Zeng 30151985 
 Daniel Adebisi 30179418
