@@ -1,10 +1,11 @@
 package com.thelocalmarketplace.software;
 
-import java.util.ArrayList;
-
 import com.thelocalmarketplace.hardware.SelfCheckoutStationBronze;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationSilver;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationGold;
+import com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation;
+
+import com.jjjwelectronics.OverloadedDevice;
 
 import com.jjjwelectronics.printer.ReceiptPrinterListener;
 import com.jjjwelectronics.printer.ReceiptPrinterBronze;
@@ -13,29 +14,58 @@ import com.jjjwelectronics.printer.ReceiptPrinterGold;
 
 public class MaintainInk {
 
-	private int GOLD = 2;
-	private int SILVER = 1;
-	private int BRONZE = 0;
+	private final int GOLD = 2;
+	private final int SILVER = 1;
+	private final int BRONZE = 0;
 	
 	private int stationGrade;
 	
-	private SelfCheckoutStationBronze stationB;
-	private SelfCheckoutStationSilver stationS;
-	private SelfCheckoutStationGold stationG;
+	private AbstractSelfCheckoutStation station;
 	
-	public MaintainInk(SelfCheckoutStationBronze station) {
-		this.stationB = station;
-		this.stationGrade = BRONZE;
+	/**
+	 * Constructor using a station.
+	 * @param newStation
+	 *    Any particular self checkout station.
+	 */
+	public MaintainInk(AbstractSelfCheckoutStation usedStation) {
+		this.station = usedStation;
+		
+		if (usedStation instanceof SelfCheckoutStationBronze) {
+			this.stationGrade = BRONZE;
+		} else if (usedStation instanceof SelfCheckoutStationSilver) {
+			this.stationGrade = SILVER;
+		} else if (usedStation instanceof SelfCheckoutStationGold) {
+			this.stationGrade = GOLD;
+		}
 	}
 	
-	public MaintainInk(SelfCheckoutStationSilver station) {
-		this.stationS = station;
-		this.stationGrade = SILVER;
+	/**
+	 * Adds ink to the printer. Simulates an attendant filling the printer with ink,
+	 * calls 
+	 * @param quantity
+	 *     amount of ink poured into the printer
+	 * @throws OverloadedDevice
+	 *     thrown if it is determined that the amount of ink being loaded exceeds
+	 *     the ink already in the printer
+	 */
+	public void addInk(int quantity) throws OverloadedDevice {
+		switch(stationGrade) {
+			case BRONZE:
+				station.getPrinter().addInk(quantity);
+			case SILVER:
+				//not so sure with this one. the amount of ink determined is supposedly inaccurate,
+				//so idk if i'm supposed to work around that or how
+				if (station.getPrinter().inkRemaining() < quantity) {
+					station.getPrinter().addInk(quantity);
+				} else {
+					throw new OverloadedDevice("Added too much ink.");
+				}
+			case GOLD:
+				if (station.getPrinter().inkRemaining() < quantity) {
+					station.getPrinter().addInk(quantity);
+				} else {
+					throw new OverloadedDevice("Added too much ink.");
+				}
+		}
 	}
-	
-	public MaintainInk(SelfCheckoutStationGold station) {
-		this.stationG = station;
-		this.stationGrade = GOLD;
-	}
-	
 }
