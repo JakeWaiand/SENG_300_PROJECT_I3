@@ -1,4 +1,4 @@
-package com.thelocalmarketplace;
+package com.thelocalmarketplace.software;
 
 import com.jjjwelectronics.*;
 import com.jjjwelectronics.IDeviceListener;
@@ -23,6 +23,7 @@ Yasir Hussain 30195085
 Almik biju 30170902 
 */
 public class BarcodeListenerImplement implements BarcodeScannerListener {
+
 
 	@Override
 	public void aDeviceHasBeenEnabled(IDevice<? extends IDeviceListener> device) {
@@ -55,8 +56,7 @@ public class BarcodeListenerImplement implements BarcodeScannerListener {
 	public void aBarcodeHasBeenScanned(IBarcodeScanner barcodeScanner, Barcode barcode) {
 		// TODO Auto-generated method stub
 		
-		
-		Add_item.itemGotScanned(barcode, barcodeScanner);
+		ItemScanControl.addItemScanning(barcode, barcodeScanner);
 		
 		
 	}

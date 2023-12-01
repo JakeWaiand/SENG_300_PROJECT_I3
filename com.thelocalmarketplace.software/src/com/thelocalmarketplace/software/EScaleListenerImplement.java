@@ -52,12 +52,18 @@ public class EScaleListenerImplement implements ElectronicScaleListener {
 	public void theMassOnTheScaleHasChanged(IElectronicScale scale, Mass mass) {
 		// TODO Auto-generated method stub
 		// something like massChanged that must be defined somewhere.
-		try {
-			WeightDiscrepancy.evaluate();
-		} catch (OverloadedDevice e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}	
+		if (scale == StartSession.getScale()) {
+			try {
+				WeightDiscrepancy.evaluate();
+			} catch (OverloadedDevice e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		else if (scale == StartSession.getScanScale()) {
+			ItemPLUControl.setMass(mass);
+		}
+		
 		
 	}
 

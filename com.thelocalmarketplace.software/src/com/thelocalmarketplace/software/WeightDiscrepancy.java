@@ -1,4 +1,4 @@
-package com.thelocalmarketplace;
+package com.thelocalmarketplace.software;
 
 import com.jjjwelectronics.IDevice;
 import com.jjjwelectronics.IDeviceListener;
@@ -26,12 +26,11 @@ Almik biju 30170902
 
 public class WeightDiscrepancy { 
 	public static Mass startingWeight = new Mass(0);
-	public static Mass expectedWeight = Add_item.expectedWeight;
+	public static Mass expectedWeight = ItemProcessingControl.expectedWeight;
 	public static Mass actualWeight;
 	public static boolean weightDiscrepancy = false; // 
-	private String level = StartSession.level;
-	private static AbstractSelfCheckoutStation station = StartSession.station;
-	public static AbstractElectronicScale scale = StartSession.scale;
+	private AbstractSelfCheckoutStation station = StartSession.getStation();
+	public static AbstractElectronicScale scale = StartSession.getScale();
 	public static boolean weightEcxcess; 
  
 	
@@ -70,42 +69,46 @@ public class WeightDiscrepancy {
 		}
 	}
 	public static void disableInteractions(AbstractSelfCheckoutStation station) {
-		station.banknoteInput.disable();
-		station.cardReader.disable();
-		station.coinSlot.disable();
-		station.mainScanner.disable();
-		station.handheldScanner.disable();
-		station.scanningArea.disable(); 
+		station.getBanknoteInput().disable();
+		station.getCardReader().disable();
+		station.getCoinSlot().disable();
+		station.getMainScanner().disable();
+		station.getHandheldScanner().disable();
+		station.getScanningArea().disable(); 
 		
 		
 	}
 	public static void enableInteractions(AbstractSelfCheckoutStation station) {
-		station.banknoteInput.enable();
-		station.cardReader.enable();
-		station.coinSlot.enable();
-		station.mainScanner.enable();
-		station.handheldScanner.enable();
-		station.scanningArea.enable();
+		station.getBanknoteInput().enable();
+		station.getCardReader().enable();
+		station.getCoinSlot().enable();
+		station.getMainScanner().enable();
+		station.getHandheldScanner().enable();
+		station.getScanningArea().enable(); 
+		
 	} 
 	public static void removeLastItem() {
-    	if (Add_item.pickedItems.isEmpty()) {
+    	if (ItemProcessingControl.pickedItems.isEmpty()) {
     		System.out.println("No items to remove.");
     		return;
     	}
-
+/*
+ * i updated this in regards to the changes i made, the person that is responsible for remove item should update
+ * subtract, as this iterations hardware doesnt support it. i would suggest reading the Mass class.
+ */
     // Retrieve details of the last added item
-    	long lastItemPrice = WeightDiscrepancy.priceList.remove(WeightDiscrepancy.priceList.size() - 1);
-    	Mass lastItemWeight = new Mass(Add_item.productsWeight.inGrams().doubleValue());
+    	long lastItemPrice = ItemProcessingControl.priceList.remove(ItemProcessingControl.priceList.size() - 1);
+    	Mass lastItemWeight = new Mass(ItemProcessingControl.productsWeight.inGrams().doubleValue());
 
     // Remove the last item from the list
-    	Add_item.pickedItems.remove(Add_item.pickedItems.size() - 1);
+    	ItemProcessingControl.pickedItems.remove(ItemProcessingControl.pickedItems.size() - 1);
 
     // Update the expectedWeight and total price
-    	Add_item.expectedWeight.subtract(lastItemWeight);
-    	WeightDiscrepancy.totalPrice -= lastItemPrice;
+    	ItemProcessingControl.expectedWeight.subtract(lastItemWeight);
+    	ItemProcessingControl.totalPrice -= lastItemPrice;
 
-    	System.out.println("Last item removed. Updated expectedWeight: " + Add_item.expectedWeight);
-    	System.out.println("Updated total price: " + WeightDiscrepancy.totalPrice);
+    	System.out.println("Last item removed. Updated expectedWeight: " + ItemProcessingControl.expectedWeight);
+    	System.out.println("Updated total price: " + ItemProcessingControl.totalPrice);
 	}
 }
           
