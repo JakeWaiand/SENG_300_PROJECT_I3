@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Currency;
 import java.io.BufferedReader;
@@ -46,43 +47,49 @@ Almik biju 30170902
 */
 
 public class StartSession {
-	private static AbstractSelfCheckoutStation station;
-	private static AbstractElectronicScale scale;
-	private static AbstractCardReader cardReader;
-	private static IBarcodeScanner handHeldScanner;
-	private static IBarcodeScanner mainScanner;
-	private static boolean isActive;
-	private static boolean activeSession;
-	private static BanknoteInsertionSlot cashSlot;
-	private static PayWithCash cashListener; 
-	private static boolean paymentSuccessful = false;
-	private static ItemScanControl scanControl;
-	private static WeightDiscrepancy WD;
-	private static PayWithDebit pay_debit;
-	private static PayWithCredit pay_Credit;
-	private static EScaleListenerImplement scaleListener;
-	private static BarcodeListenerImplement barcodeListener;
-	private static CardlistenerImplement cardListener;
-	private static AbstractElectronicScale scanScale;
+	private AbstractSelfCheckoutStation station;
+	private AbstractElectronicScale scale;
+	private AbstractCardReader cardReader;
+	private IBarcodeScanner handHeldScanner;
+	private IBarcodeScanner mainScanner;
+	private boolean isActive;
+	private boolean activeSession;
+	private BanknoteInsertionSlot cashSlot;
+	private PayWithCash cashListener; 
+	private boolean paymentSuccessful = false;
+	private ItemProcessingControl itemControl;
+	private WeightDiscrepancy WD;
+	private PayWithDebit pay_debit;
+	private PayWithCredit pay_Credit;
+	private EScaleListenerImplement scaleListener;
+	private BarcodeListenerImplement barcodeListener;
+	private CardlistenerImplement cardListener;
+	private AbstractElectronicScale scanScale;
+	private ArrayList<String> pickedItems; //this can be used for print receipt
+	private ArrayList<Long> priceList; //this can be used for print receipt
+	private ArrayList<Mass> weightList;
+	private long totalPrice; //this can be used for print receipt
+	private Mass expectedWeight = new Mass(0);
+	
 
 	
 	
 	
-	private static Currency cad = Currency.getInstance("CAD");
-	private static Banknote banknote5 = new Banknote(cad,new BigDecimal("5")); static Banknote banknote10 = new Banknote(cad,new BigDecimal("10")); static Banknote banknote20 = new Banknote(cad,new BigDecimal("20")); static Banknote banknote50 = new Banknote(cad,new BigDecimal("50")); static Banknote banknote100 = new Banknote(cad,new BigDecimal("100"));
-	private static BigDecimal[] banknoteDenominations = {new BigDecimal("5"),new BigDecimal("10"),new BigDecimal("20"),new BigDecimal("50"),new BigDecimal("100")};
-	private static Banknote[] banknotes = {banknote5, banknote10, banknote20 ,banknote50, banknote100};
+	private Currency cad = Currency.getInstance("CAD");
+	private Banknote banknote5 = new Banknote(cad,new BigDecimal("5")); static Banknote banknote10 = new Banknote(cad,new BigDecimal("10")); static Banknote banknote20 = new Banknote(cad,new BigDecimal("20")); static Banknote banknote50 = new Banknote(cad,new BigDecimal("50")); static Banknote banknote100 = new Banknote(cad,new BigDecimal("100"));
+	private BigDecimal[] banknoteDenominations = {new BigDecimal("5"),new BigDecimal("10"),new BigDecimal("20"),new BigDecimal("50"),new BigDecimal("100")};
+	private Banknote[] banknotes = {banknote5, banknote10, banknote20 ,banknote50, banknote100};
 	
-	private static Coin coin1 = new Coin(cad,new BigDecimal("0.01")); static Coin coin5 = new Coin(cad,new BigDecimal("0.05")); static Coin coin10 = new Coin(cad,new BigDecimal("0.10")); static Coin coin25 = new Coin(cad,new BigDecimal("0.25")); static Coin coin100 = new Coin(cad,new BigDecimal("1")); static Coin coin200 = new Coin(cad,new BigDecimal("2"));
-	private static BigDecimal[] coinDenominations = {new BigDecimal("0.05"), new BigDecimal("0.10"), new BigDecimal("0.25"), new BigDecimal("1"), new BigDecimal("2")};
-	private static Coin[] coins = {coin5,coin10,coin25,coin100,coin200};
+	private Coin coin1 = new Coin(cad,new BigDecimal("0.01")); static Coin coin5 = new Coin(cad,new BigDecimal("0.05")); static Coin coin10 = new Coin(cad,new BigDecimal("0.10")); static Coin coin25 = new Coin(cad,new BigDecimal("0.25")); static Coin coin100 = new Coin(cad,new BigDecimal("1")); static Coin coin200 = new Coin(cad,new BigDecimal("2"));
+	private BigDecimal[] coinDenominations = {new BigDecimal("0.05"), new BigDecimal("0.10"), new BigDecimal("0.25"), new BigDecimal("1"), new BigDecimal("2")};
+	private Coin[] coins = {coin5,coin10,coin25,coin100,coin200};
 	
-	private static BanknoteInsertionSlot banknoteSlot = new BanknoteInsertionSlot();
-	private static BanknoteValidator banknoteValidator = new BanknoteValidator(cad,banknoteDenominations);
+	private BanknoteInsertionSlot banknoteSlot = new BanknoteInsertionSlot();
+	private BanknoteValidator banknoteValidator = new BanknoteValidator(cad,banknoteDenominations);
 	//BanknoteStorageUnit banknoteStorage = new BanknoteStorageUnit();
 	
-	private static CoinSlot coinSlot = new CoinSlot();
-	private static CoinValidator coinValidator = new CoinValidator(cad,Arrays.asList(coinDenominations));
+	private CoinSlot coinSlot = new CoinSlot();
+	private CoinValidator coinValidator = new CoinValidator(cad,Arrays.asList(coinDenominations));
 	
 	
 	
@@ -96,12 +103,12 @@ public class StartSession {
 		setScanScale((AbstractElectronicScale) station.getScanningArea());
 		station.turnOn();
 		
-		setScanControl(new ItemScanControl());
-		WD = new WeightDiscrepancy();
+		setWD(new WeightDiscrepancy(this));
+		setItemControl(new ItemProcessingControl(this));
 		pay_debit = new PayWithDebit();
 		pay_Credit = new PayWithCredit();
-		scaleListener = new EScaleListenerImplement();
-		barcodeListener = new BarcodeListenerImplement();
+		scaleListener = new EScaleListenerImplement(this);
+		barcodeListener = new BarcodeListenerImplement(this);
 		cardListener = new CardlistenerImplement();
 		getScale().register(scaleListener);
 		cardReader.register(cardListener);
@@ -172,74 +179,148 @@ public class StartSession {
 
 
 
-	public static AbstractSelfCheckoutStation getStation() {
+	public AbstractSelfCheckoutStation getStation() {
 		return station;
 	}
 
 
 
 	public void setStation(AbstractSelfCheckoutStation station) {
-		StartSession.station = station;
+		this.station = station;
 	}
 
 
 
-	public static ItemScanControl getScanControl() {
-		return scanControl;
+	public ItemProcessingControl getItemControl() {
+		return itemControl;
 	}
 
 
 
-	public void setScanControl(ItemScanControl scanControl) {
-		StartSession.scanControl = scanControl;
+	public void setItemControl(ItemProcessingControl itemControl) {
+		this.itemControl = itemControl;
 	}
 
 
 
-	public static AbstractElectronicScale getScanScale() { // for the plu items
+	public AbstractElectronicScale getScanScale() { // for the plu items
 		return scanScale;
 	}
 
 
 
 	public void setScanScale(AbstractElectronicScale scanScale) {
-		StartSession.scanScale = scanScale;
+		this.scanScale = scanScale;
 	}
 
 
 
-	public static AbstractElectronicScale getScale() {
+	public AbstractElectronicScale getScale() {
 		return scale;
 	}
 
 
 
-	public static void setScale(AbstractElectronicScale scale) {
-		StartSession.scale = scale;
+	public void setScale(AbstractElectronicScale scale) {
+		this.scale = scale;
 	}
 
 
 
-	public static IBarcodeScanner getHandHeldScanner() {
+	public IBarcodeScanner getHandHeldScanner() {
 		return handHeldScanner;
 	}
 
 
 
-	public static void setHandHeldScanner(IBarcodeScanner handHeldScanner) {
-		StartSession.handHeldScanner = handHeldScanner;
+	public void setHandHeldScanner(IBarcodeScanner handHeldScanner) {
+		this.handHeldScanner = handHeldScanner;
 	}
 
 
 
-	public static IBarcodeScanner getMainScanner() {
+	public IBarcodeScanner getMainScanner() {
 		return mainScanner;
 	}
 
 
 
-	public static void setMainScanner(IBarcodeScanner mainScanner) {
-		StartSession.mainScanner = mainScanner;
+	public void setMainScanner(IBarcodeScanner mainScanner) {
+		this.mainScanner = mainScanner;
+	}
+
+
+
+
+
+	public ArrayList<String> getPickedItems() {
+		return pickedItems;
+	}
+
+
+
+	public void setPickedItems(ArrayList<String> pickedItems) {
+		this.pickedItems = pickedItems;
+	}
+
+
+
+	public long getTotalPrice() {
+		return totalPrice;
+	}
+
+
+
+	public void setTotalPrice(long totalPrice) {
+		this.totalPrice = totalPrice;
+	}
+
+
+
+	public ArrayList<Long> getPriceList() {
+		return priceList;
+	}
+
+
+
+	public void setPriceList(ArrayList<Long> priceList) {
+		this.priceList = priceList;
+	}
+
+
+
+	public Mass getExpectedWeight() {
+		return expectedWeight;
+	}
+
+
+
+	public void setExpectedWeight(Mass expectedWeight) {
+		this.expectedWeight = expectedWeight;
+	}
+
+
+
+	public ArrayList<Mass> getWeightList() {
+		return weightList;
+	}
+
+
+
+	public void setWeightList(ArrayList<Mass> weightList) {
+		this.weightList = weightList;
+	}
+
+
+
+	public WeightDiscrepancy getWD() {
+		return WD;
+	}
+
+
+
+	public void setWD(WeightDiscrepancy wD) {
+		WD = wD;
 	}
 
 	

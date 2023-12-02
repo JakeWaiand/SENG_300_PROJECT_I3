@@ -25,50 +25,51 @@ Almik biju 30170902
 */
 
 public class WeightDiscrepancy { 
-	public static Mass startingWeight = new Mass(0);
-	public static Mass expectedWeight = ItemProcessingControl.expectedWeight;
-	public static Mass actualWeight;
-	public static boolean weightDiscrepancy = false; // 
-	private AbstractSelfCheckoutStation station = StartSession.getStation();
-	public static AbstractElectronicScale scale = StartSession.getScale();
-	public static boolean weightEcxcess; 
- 
+	private Mass startingWeight = new Mass(0);
+	private Mass actualWeight;
+	private boolean weightDiscrepancy = false; // 
+	private AbstractSelfCheckoutStation station;
+	private AbstractElectronicScale scale;
+	private boolean weightEcxcess;
+	private StartSession session;
 	
 	
 		
-	
-	
-	public static void set_weightDiscrepancy(boolean weightDis) {
-		weightDiscrepancy = weightDis;
+	public WeightDiscrepancy(StartSession session) {
+		this.session = session;
 	}
 	
-	public static void evaluate() throws OverloadedDevice {
+	public void set_weightDiscrepancy(boolean weightDis) {
+		setWeightDiscrepancy(weightDis);
+	}
+	
+	public void evaluate() throws OverloadedDevice {
 		
-		MassDifference difference = scale.getCurrentMassOnTheScale().difference(expectedWeight);
+		MassDifference difference = scale.getCurrentMassOnTheScale().difference(session.getExpectedWeight());
 		Mass absDifference = difference.abs();
 		 if (absDifference.compareTo(scale.getSensitivityLimit()) == -1) {
 			 set_weightDiscrepancy(false); 
 		 }
-		else if (scale.getCurrentMassOnTheScale().compareTo(expectedWeight) == 1) {
+		else if (scale.getCurrentMassOnTheScale().compareTo(session.getExpectedWeight()) == 1) {
 			set_weightDiscrepancy(true);
 			System.out.println("unexpected item in bagging area"
 					+ "please remove the item before continuing.");
 		}
-		else if (scale.getCurrentMassOnTheScale().compareTo(expectedWeight) == -1) {
+		else if (scale.getCurrentMassOnTheScale().compareTo(session.getExpectedWeight()) == -1) {
 			set_weightDiscrepancy(true);
 			System.out.println("please put the item in the bagging area.");
 		}
 		 	
 	}
 	
-	public static void exceedWeightEvaluate() {
-		weightEcxcess = true;
-		while(weightEcxcess) {
+	public void exceedWeightEvaluate() {
+		setWeightEcxcess(true);
+		while(isWeightEcxcess()) {
 			System.out.println("the scale has exceeded its limit. please remove the last item you added.");
 			
 		}
 	}
-	public static void disableInteractions(AbstractSelfCheckoutStation station) {
+	public void disableInteractions(AbstractSelfCheckoutStation station) {
 		station.getBanknoteInput().disable();
 		station.getCardReader().disable();
 		station.getCoinSlot().disable();
@@ -78,7 +79,7 @@ public class WeightDiscrepancy {
 		
 		
 	}
-	public static void enableInteractions(AbstractSelfCheckoutStation station) {
+	public void enableInteractions(AbstractSelfCheckoutStation station) {
 		station.getBanknoteInput().enable();
 		station.getCardReader().enable();
 		station.getCoinSlot().enable();
@@ -87,8 +88,8 @@ public class WeightDiscrepancy {
 		station.getScanningArea().enable(); 
 		
 	} 
-	public static void removeLastItem() {
-    	if (ItemProcessingControl.pickedItems.isEmpty()) {
+	public void removeLastItem() {
+    if (session.getPickedItems().isEmpty()) {
     		System.out.println("No items to remove.");
     		return;
     	}
@@ -97,18 +98,35 @@ public class WeightDiscrepancy {
  * subtract, as this iterations hardware doesnt support it. i would suggest reading the Mass class.
  */
     // Retrieve details of the last added item
-    	long lastItemPrice = ItemProcessingControl.priceList.remove(ItemProcessingControl.priceList.size() - 1);
-    	Mass lastItemWeight = new Mass(ItemProcessingControl.productsWeight.inGrams().doubleValue());
+    	
+    	long lastItemPrice = session.getPriceList().remove(session.getPriceList().size() - 1);
+    	Mass lastItemWeight = new Mass(session.getWeightList().get(-1).inGrams().doubleValue());
 
     // Remove the last item from the list
-    	ItemProcessingControl.pickedItems.remove(ItemProcessingControl.pickedItems.size() - 1);
+    	session.getPickedItems().remove(session.getPickedItems().size() - 1);
 
     // Update the expectedWeight and total price
-    	ItemProcessingControl.expectedWeight.subtract(lastItemWeight);
-    	ItemProcessingControl.totalPrice -= lastItemPrice;
+    	session.getExpectedWeight().subtract(lastItemWeight);
+    	session.setTotalPrice(session.getTotalPrice() - lastItemPrice);
 
-    	System.out.println("Last item removed. Updated expectedWeight: " + ItemProcessingControl.expectedWeight);
-    	System.out.println("Updated total price: " + ItemProcessingControl.totalPrice);
+    	System.out.println("Last item removed. Updated expectedWeight: " + session.getExpectedWeight());
+    	System.out.println("Updated total price: " + session.getTotalPrice());
+	}
+
+	public boolean isWeightDiscrepancy() {
+		return weightDiscrepancy;
+	}
+
+	public void setWeightDiscrepancy(boolean weightDiscrepancy) {
+		this.weightDiscrepancy = weightDiscrepancy;
+	}
+
+	public boolean isWeightEcxcess() {
+		return weightEcxcess;
+	}
+
+	public void setWeightEcxcess(boolean weightEcxcess) {
+		this.weightEcxcess = weightEcxcess;
 	}
 }
           

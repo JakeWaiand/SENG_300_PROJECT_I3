@@ -22,8 +22,10 @@ Almik biju 30170902
 */
 
 public class EScaleListenerImplement implements ElectronicScaleListener {
-
-	
+	StartSession session;
+	public EScaleListenerImplement(StartSession session) {
+		this.session = session;
+	}
 	@Override
 	public void aDeviceHasBeenEnabled(IDevice<? extends IDeviceListener> device) {
 		// TODO Auto-generated method stub
@@ -52,16 +54,16 @@ public class EScaleListenerImplement implements ElectronicScaleListener {
 	public void theMassOnTheScaleHasChanged(IElectronicScale scale, Mass mass) {
 		// TODO Auto-generated method stub
 		// something like massChanged that must be defined somewhere.
-		if (scale == StartSession.getScale()) {
+		if (scale == session.getScale()) {
 			try {
-				WeightDiscrepancy.evaluate();
+				session.getWD().evaluate();
 			} catch (OverloadedDevice e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-		else if (scale == StartSession.getScanScale()) {
-			ItemPLUControl.setMass(mass);
+		else if (scale == session.getScanScale()) {
+			session.getItemControl().addItemPLU(mass);
 		}
 		
 		
@@ -69,14 +71,14 @@ public class EScaleListenerImplement implements ElectronicScaleListener {
 
 	@Override
 	public void theMassOnTheScaleHasExceededItsLimit(IElectronicScale scale) {
-		WeightDiscrepancy.exceedWeightEvaluate();
+		session.getWD().exceedWeightEvaluate();
 		
 		
 	}
 
 	@Override
 	public void theMassOnTheScaleNoLongerExceedsItsLimit(IElectronicScale scale) {
-		WeightDiscrepancy.weightEcxcess = false;
+		session.getWD().setWeightEcxcess(false);
 	
 	}
 
