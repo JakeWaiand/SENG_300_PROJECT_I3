@@ -28,14 +28,14 @@ public class MaintainInk {
 	 *    Any particular self checkout station.
 	 */
 	public MaintainInk(AbstractSelfCheckoutStation usedStation) {
-		this.station = usedStation;
+		station = usedStation;
 		
 		if (usedStation instanceof SelfCheckoutStationBronze) {
-			this.stationGrade = BRONZE;
+			stationGrade = BRONZE;
 		} else if (usedStation instanceof SelfCheckoutStationSilver) {
-			this.stationGrade = SILVER;
+			stationGrade = SILVER;
 		} else if (usedStation instanceof SelfCheckoutStationGold) {
-			this.stationGrade = GOLD;
+			stationGrade = GOLD;
 		}
 	}
 	
@@ -49,23 +49,29 @@ public class MaintainInk {
 	 *     the ink already in the printer
 	 */
 	public void addInk(int quantity) throws OverloadedDevice {
-		switch(stationGrade) {
-			case BRONZE:
-				station.getPrinter().addInk(quantity);
-			case SILVER:
-				//not so sure with this one. the amount of ink determined is supposedly inaccurate,
-				//so idk if i'm supposed to work around that or how
-				if (station.getPrinter().inkRemaining() < quantity) {
+		
+		if (station.getPrinter().isDisabled()) {
+			
+			switch(stationGrade) {
+				case BRONZE:
 					station.getPrinter().addInk(quantity);
-				} else {
-					throw new OverloadedDevice("Added too much ink.");
-				}
-			case GOLD:
-				if (station.getPrinter().inkRemaining() < quantity) {
-					station.getPrinter().addInk(quantity);
-				} else {
-					throw new OverloadedDevice("Added too much ink.");
-				}
+				case SILVER:
+					//not so sure with this one. the amount of ink determined is supposedly inaccurate,
+					//so idk if i'm supposed to work around that or how
+					if (station.getPrinter().inkRemaining() < quantity) {
+						station.getPrinter().addInk(quantity);
+					} else {
+						throw new OverloadedDevice("Added too much ink.");
+					}
+				case GOLD:
+					if (station.getPrinter().inkRemaining() < quantity) {
+						station.getPrinter().addInk(quantity);
+					} else {
+						throw new OverloadedDevice("Added too much ink.");
+					}
+			}
+		} else {
+			//throw an exception
 		}
 	}
 }

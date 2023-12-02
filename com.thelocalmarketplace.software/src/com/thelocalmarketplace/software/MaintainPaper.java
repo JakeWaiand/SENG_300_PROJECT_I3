@@ -23,7 +23,7 @@ public class MaintainPaper {
 	private AbstractSelfCheckoutStation station;
 	
 	public MaintainPaper(AbstractSelfCheckoutStation usedStation) {
-		this.station = usedStation;
+		station = usedStation;
 		
 		if (usedStation instanceof SelfCheckoutStationBronze) {
 			stationGrade = BRONZE;
@@ -35,22 +35,28 @@ public class MaintainPaper {
 	}
 	
 	public void addPaper(int quantity) throws OverloadedDevice {
-		switch(stationGrade) {
-			case BRONZE:
-				station.getPrinter().addPaper(quantity);
-			case SILVER:
-				//same question with the maintainink class
-				if (station.getPrinter().paperRemaining() < quantity) {
+
+		if (station.getPrinter().isDisabled()) {
+			
+			switch(stationGrade) {
+				case BRONZE:
 					station.getPrinter().addPaper(quantity);
-				} else {
-					throw new OverloadedDevice("Added too much paper.");
-				}
-			case GOLD:
-				if (station.getPrinter().paperRemaining() < quantity) {
-					station.getPrinter().addPaper(quantity);
-				} else {
-					throw new OverloadedDevice("Added too much paper.");
-				}
+				case SILVER:
+					//same question with the maintainink class
+					if (station.getPrinter().paperRemaining() < quantity) {
+						station.getPrinter().addPaper(quantity);
+					} else {
+						throw new OverloadedDevice("Added too much paper.");
+					}
+				case GOLD:
+					if (station.getPrinter().paperRemaining() < quantity) {
+						station.getPrinter().addPaper(quantity);
+					} else {
+						throw new OverloadedDevice("Added too much paper.");
+					}
+			}
+		} else {
+			//throw an exception
 		}
 	}
 	
