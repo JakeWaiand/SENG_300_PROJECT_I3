@@ -126,10 +126,6 @@ public class AttendantStationGUI extends JFrame implements ActionListener{
         return stationBox;
     }
 
-    private void doSomething() {
-        station1Panels[0].getComponents();
-    }
-
     private JPanel createComponent(String labelText, Color color) {
         JPanel componentPanel = new JPanel();
         componentPanel.setBorder(new EmptyBorder(5, 10, 5, 10));
