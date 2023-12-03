@@ -74,6 +74,7 @@ public class StartSession {
 	private ArrayList<Mass> weightList;
 	private long totalPrice; //this can be used for print receipt
 	private Mass expectedWeight = new Mass(0);
+	private AttendantControl attendantControl;
 	
 
 	
@@ -365,6 +366,18 @@ public class StartSession {
 
 	public void setScaleListener(EScaleListenerImplement scaleListener) {
 		this.scaleListener = scaleListener;
+	}
+
+
+
+	public AttendantControl getAttendantControl() {
+		return attendantControl;
+	}
+
+
+
+	public void setAttendantControl(AttendantControl attendantControl) {
+		this.attendantControl = attendantControl;
 	}
 
 	
