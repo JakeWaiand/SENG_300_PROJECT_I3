@@ -26,9 +26,14 @@ Almik biju 30170902
 
 
 public class PrintReceipt implements ReceiptPrinterListener{
-	public static ArrayList<String> itemlist = Add_item.pickedItems;
-	public static ArrayList<Long> priceList = Add_item.priceList;
-	public static void printReceipt() throws EmptyDevice, OverloadedDevice {
+	private ArrayList<String> itemlist;
+	private ArrayList<Long> priceList;
+	private StartSession session;
+	public PrintReceipt(StartSession session) throws EmptyDevice, OverloadedDevice {
+		this.session = session;
+		itemlist = session.getPickedItems();
+		priceList = session.getPriceList();
+		
 		String record = new String();
 		record = "";
 	
@@ -36,7 +41,7 @@ public class PrintReceipt implements ReceiptPrinterListener{
 		record += (itemlist.get(i) + "                " + priceList.get(i));
 		}
 		for (int i = 0; record.length() > i; i++) {
-			StartSession.station.printer.print(record.charAt(i));
+			session.getStation().getPrinter().print(record.charAt(i));
 			
 		}
 		

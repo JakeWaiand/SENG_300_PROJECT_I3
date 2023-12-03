@@ -23,7 +23,12 @@ Almik biju 30170902
 public class PayWithCredit {
 
     private boolean identity = false;
-
+    private StartSession session;
+    
+    public PayWithCredit(StartSession session) {
+    	this.session = session;
+    }
+    
     public CardIssuer selectCardType() {
         Scanner scanner = new Scanner(System.in);
         int cardTypeInt;
@@ -93,14 +98,14 @@ public class PayWithCredit {
                 boolean successful = bank.postTransaction(card.getNumber(), holdNumber, amount);
 
                 if (successful) {
-                    System.out.println("Remaining balance: " + (Add_item.totalPrice - amount));
+                    System.out.println("Remaining balance: " + (session.getTotalPrice() - amount));
                 }
             }
         }
     }
 
     public void payByCredit(CardSwipeData card, CardIssuer bank) {
-        long amountDue = Add_item.totalPrice;
+        long amountDue = session.getTotalPrice();
         System.out.println("Please enter your signature");
         Scanner signatureScanner = new Scanner(System.in);
         String thisSignature = signatureScanner.next();

@@ -46,6 +46,11 @@ Almik biju 30170902
 */
 public class PayWithCash implements BanknoteInsertionSlotObserver,CoinSlotObserver,BanknoteDispensationSlotObserver{
 	private static Scanner scanner;
+	private StartSession session;
+	
+	public PayWithCash(StartSession session) {
+        this.session = session;
+    }
 	
 	// So i made the methods "void", but i don't know what the other parts of the system wait for when they call this class and these methods, so if there is a need to change something, just text me (Firdovsi)
 	public static Coin coinInserted = new Coin(null);
@@ -60,7 +65,7 @@ public class PayWithCash implements BanknoteInsertionSlotObserver,CoinSlotObserv
 	
 
 	public void Pay(AbstractSelfCheckoutStation selfCheckoutStation) throws DisabledException, CashOverloadException{
-		double totalAmountDue = Add_item.totalPrice ;
+		double totalAmountDue = session.getTotalPrice() ;
 		
 		BigDecimal insertedDenomination;
 		while(totalAmountDue > 0) {
@@ -68,22 +73,22 @@ public class PayWithCash implements BanknoteInsertionSlotObserver,CoinSlotObserv
 			
 			insertedDenomination = scanner.nextBigDecimal();
 			
-			if(Arrays.asList(StartSession.banknoteDenominations).contains(insertedDenomination) || Arrays.asList(StartSession.coinDenominations).contains(insertedDenomination)){
+			if(Arrays.asList(session.getBanknoteDenominations()).contains(insertedDenomination) || Arrays.asList(session.getCoinDenominations()).contains(insertedDenomination)){
 				//banknoteSlot.receive(); So the slot should receive the inserted banknote 
 				
 				if(insertedDenomination.doubleValue() < 4.0) { // Case if the inserted thing is a Coin
-					Coin insertedCoin = new Coin(StartSession.cad,insertedDenomination);
-					StartSession.coinSlot.receive(insertedCoin);
-					selfCheckoutStation.coinValidator.receive(insertedCoin);
-					selfCheckoutStation.coinStorage.receive(insertedCoin);
+					Coin insertedCoin = new Coin(Currency.getInstance("CAD"), insertedDenomination);
+					session.getCoinSlot().receive(insertedCoin);
+					session.getStation().getCoinValidator().receive(insertedCoin);
+					session.getStation().getCoinStorage().receive(insertedCoin);
 					
 					
 				}
 				else if(insertedDenomination.doubleValue() > 4.0){ // Case if the inserted thing is a Banknote
-					Banknote insertedBanknote = new Banknote(StartSession.cad,insertedDenomination);
-					StartSession.banknoteSlot.receive(insertedBanknote);
-					selfCheckoutStation.banknoteValidator.receive(insertedBanknote);
-					selfCheckoutStation.banknoteStorage.receive(insertedBanknote);
+					Banknote insertedBanknote = new Banknote(Currency.getInstance("CAD"),insertedDenomination);
+					session.getBanknoteSlot().receive(insertedBanknote);
+					session.getStation().getBanknoteValidator().receive(insertedBanknote);
+					session.getStation().getBanknoteStorage().receive(insertedBanknote);
 					
 					
 				}
@@ -101,12 +106,12 @@ public class PayWithCash implements BanknoteInsertionSlotObserver,CoinSlotObserv
 
 		    System.out.println("Change to be returned as banknotes: " + change);
 
-		    for (Banknote banknote : StartSession.banknotes) {
+		    for (Banknote banknote : session.getBanknotes()) {
 		        int numBanknotes = (int) (change / banknote.getDenomination().doubleValue());
 		        if (numBanknotes > 0) {
 		            System.out.println("Return " + numBanknotes + " x " + banknote.getDenomination() + " banknote(s) as a change");
 		            for (int i = 0; i < numBanknotes; i++) {
-		                selfCheckoutStation.banknoteOutput.receive(banknote); // Banknote dispenser receives the banknote we are currently iterating on
+		                session.getStation().getBanknoteOutput().receive(banknote); // Banknote dispenser receives the banknote we are currently iterating on
 		            }
 		            change -= numBanknotes * banknote.getDenomination().doubleValue();
 		        }
@@ -122,12 +127,12 @@ public class PayWithCash implements BanknoteInsertionSlotObserver,CoinSlotObserv
 
 		    System.out.println("Change to be returned as coins: " + change);
 
-		    for (Coin coin : StartSession.coins) { 
+		    for (Coin coin : session.getCoins()) { 
 		        int numCoins = (int) (change / coin.getValue().doubleValue());
 		        if (numCoins > 0) {
 		            System.out.println("Return " + numCoins + " x " + coin.getValue() + " coin(s) as change");
 		            for (int i = 0; i < numCoins; i++) {
-		                selfCheckoutStation.coinTray.receive(coin); // Coin tray receives the coin we are currently iterating on
+		                session.getStation().getCoinTray().receive(coin); // Coin tray receives the coin we are currently iterating on
 		            }
 		            change -= numCoins * coin.getValue().doubleValue();
 		        }
@@ -178,7 +183,7 @@ public class PayWithCash implements BanknoteInsertionSlotObserver,CoinSlotObserv
 	public void banknoteInserted(BanknoteInsertionSlot slot) {
 		// TODO Auto-generated method stub
 		try {
-			Pay(StartSession.station); // I typed this part, and the "try catch" was added by the IDE
+			Pay(session.getStation()); // I typed this part, and the "try catch" was added by the IDE
 		} catch (DisabledException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -210,7 +215,7 @@ public class PayWithCash implements BanknoteInsertionSlotObserver,CoinSlotObserv
 	public void coinInserted(CoinSlot slot) {
 		// TODO Auto-generated method stub
 		try {
-			Pay(StartSession.station); // I typed this part, and the "try catch" was added by the IDE
+			Pay(session.getStation()); // I typed this part, and the "try catch" was added by the IDE
 		} catch (DisabledException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

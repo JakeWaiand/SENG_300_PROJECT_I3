@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Currency;
 import java.io.BufferedReader;
 
+import com.jjjwelectronics.EmptyDevice;
 import com.jjjwelectronics.Mass;
 import com.jjjwelectronics.Numeral;
 import com.jjjwelectronics.OverloadedDevice;
@@ -61,6 +62,9 @@ public class StartSession {
 	private WeightDiscrepancy WD;
 	private PayWithDebit pay_debit;
 	private PayWithCredit pay_Credit;
+	private PayWithCash pay_Cash;
+	private PrintReceipt printReceipt;
+	
 	private EScaleListenerImplement scaleListener;
 	private BarcodeListenerImplement barcodeListener;
 	private CardlistenerImplement cardListener;
@@ -76,12 +80,14 @@ public class StartSession {
 	
 	
 	private Currency cad = Currency.getInstance("CAD");
-	private Banknote banknote5 = new Banknote(cad,new BigDecimal("5")); static Banknote banknote10 = new Banknote(cad,new BigDecimal("10")); static Banknote banknote20 = new Banknote(cad,new BigDecimal("20")); static Banknote banknote50 = new Banknote(cad,new BigDecimal("50")); static Banknote banknote100 = new Banknote(cad,new BigDecimal("100"));
+	
 	private BigDecimal[] banknoteDenominations = {new BigDecimal("5"),new BigDecimal("10"),new BigDecimal("20"),new BigDecimal("50"),new BigDecimal("100")};
+	private Banknote banknote5 = new Banknote(cad, banknoteDenominations[0]); Banknote banknote10 = new Banknote(cad, banknoteDenominations[1]); Banknote banknote20 = new Banknote(cad, banknoteDenominations[2]); Banknote banknote50 = new Banknote(cad, banknoteDenominations[3]); Banknote banknote100 = new Banknote(cad, banknoteDenominations[4]);
 	private Banknote[] banknotes = {banknote5, banknote10, banknote20 ,banknote50, banknote100};
 	
-	private Coin coin1 = new Coin(cad,new BigDecimal("0.01")); static Coin coin5 = new Coin(cad,new BigDecimal("0.05")); static Coin coin10 = new Coin(cad,new BigDecimal("0.10")); static Coin coin25 = new Coin(cad,new BigDecimal("0.25")); static Coin coin100 = new Coin(cad,new BigDecimal("1")); static Coin coin200 = new Coin(cad,new BigDecimal("2"));
-	private BigDecimal[] coinDenominations = {new BigDecimal("0.05"), new BigDecimal("0.10"), new BigDecimal("0.25"), new BigDecimal("1"), new BigDecimal("2")};
+	
+	private BigDecimal[] coinDenominations = {new BigDecimal("0.01"), new BigDecimal("0.05"), new BigDecimal("0.10"), new BigDecimal("0.25"), new BigDecimal("1.0"), new BigDecimal("2.0")};
+	private Coin coin1 = new Coin(cad, coinDenominations[0]); Coin coin5 = new Coin(cad, coinDenominations[1]); Coin coin10 = new Coin(cad, coinDenominations[2]); Coin coin25 = new Coin(cad, coinDenominations[3]); Coin coin100 = new Coin(cad, coinDenominations[4]); Coin coin200 = new Coin(cad, coinDenominations[5]);
 	private Coin[] coins = {coin5,coin10,coin25,coin100,coin200};
 	
 	private BanknoteInsertionSlot banknoteSlot = new BanknoteInsertionSlot();
@@ -94,7 +100,7 @@ public class StartSession {
 	
 	
 	
-	public StartSession(AbstractSelfCheckoutStation input_station) throws OverloadedDevice {
+	public StartSession(AbstractSelfCheckoutStation input_station) throws OverloadedDevice, EmptyDevice {
 		setStation(input_station);
 		setScale((AbstractElectronicScale)station.getBaggingArea());
 		cardReader = (AbstractCardReader)station.getCardReader();
@@ -105,8 +111,11 @@ public class StartSession {
 		
 		setWD(new WeightDiscrepancy(this));
 		setItemControl(new ItemProcessingControl(this));
-		pay_debit = new PayWithDebit();
-		pay_Credit = new PayWithCredit();
+		pay_debit = new PayWithDebit(this);
+		pay_Credit = new PayWithCredit(this);
+		pay_Cash = new PayWithCash(this);
+		printReceipt = new PrintReceipt(this);
+		
 		setScaleListener(new EScaleListenerImplement(this));
 		barcodeListener = new BarcodeListenerImplement(this);
 		cardListener = new CardlistenerImplement();
@@ -176,11 +185,34 @@ public class StartSession {
         
     }
 	
-
+    public BigDecimal[] getBanknoteDenominations() {
+    	return banknoteDenominations;
+    }
+    
+    public BigDecimal[] getCoinDenominations() {
+    	return coinDenominations;
+    }
+    
+    public CoinSlot getCoinSlot() {
+    	return coinSlot;
+    }
+    
+    public BanknoteInsertionSlot getBanknoteSlot() {
+    	return banknoteSlot;
+    }
+    
 
 
 	public AbstractSelfCheckoutStation getStation() {
 		return station;
+	}
+	
+	public Banknote[] getBanknotes() {
+		return banknotes;
+	}
+	
+	public Coin[] getCoins() {
+		return coins;
 	}
 
 

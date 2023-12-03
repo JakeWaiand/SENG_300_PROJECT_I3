@@ -87,7 +87,7 @@ public class EScaleListenerImplement implements ElectronicScaleListener {
 
 	@Override
 	public void theMassOnTheScaleNoLongerExceedsItsLimit(IElectronicScale scale) {
-		session.getWD().setWeightEcxcess(false);
+		session.getWD().setWeightExcess(false);
 	
 	}
 	public boolean isPLUItemIncoming() {

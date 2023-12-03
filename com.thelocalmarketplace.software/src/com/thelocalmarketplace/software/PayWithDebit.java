@@ -8,9 +8,14 @@ import java.util.Scanner;
 
 public class PayWithDebit {
 
-    public static boolean identity = false;
+    private boolean identity = false;
+    private StartSession session;
+    
+    public PayWithDebit(StartSession session) {
+    	this.session = session;
+    }
 
-    public static CardIssuer selectCardType() {
+    public CardIssuer selectCardType() {
         Scanner scanner = new Scanner(System.in);
         int cardTypeInt;
 
@@ -52,13 +57,13 @@ public class PayWithDebit {
         return bank;
     }
 
-    public static void verifyCardHolder(String signature, CardSwipeData card) {
+    public void verifyCardHolder(String signature, CardSwipeData card) {
         if (signature.equals(card.getCardholder())) {
             identity = true;
         }
     }
 
-    public static void sendMessage(CardSwipeData card, CardIssuer bank, double amount) {
+    public void sendMessage(CardSwipeData card, CardIssuer bank, double amount) {
         if (identity) {
             boolean cardRead = false;
 
@@ -75,14 +80,14 @@ public class PayWithDebit {
                 boolean successful = bank.postTransaction(card.getNumber(), holdNumber, amount);
 
                 if (successful) {
-                    System.out.println("Remaining balance: " + (Add_item.totalPrice - amount));
+                    System.out.println("Remaining balance: " + (session.getTotalPrice() - amount));
                 }
             }
         }
     }
 
-    public static void PayByDebit(CardSwipeData card, CardIssuer bank) {
-        double amountDue = Add_item.totalPrice;
+    public void PayByDebit(CardSwipeData card, CardIssuer bank) {
+        double amountDue = session.getTotalPrice();
         System.out.println("please enter your signature");
         Scanner signatureScanner = new Scanner(System.in);
         String userSignature = signatureScanner.next();
@@ -91,7 +96,7 @@ public class PayWithDebit {
         sendMessage(card, bank, amountDue);
     }
 
-    public static void payment_in_process(CardSwipeData card) {
+    public void payment_in_process(CardSwipeData card) {
         CardIssuer bank = selectCardType();
         PayByDebit(card, bank);
     }
