@@ -70,7 +70,7 @@ public class ItemProcessingControl {
   
     /**
      * if the user chooses ignore scan, it sets the ignore variable to true
-     * UI TEAM NEEDS TO WORK WITH THIS.
+     * 
      * @param ignoring
      */
 	public void setIgnore(boolean ignoring) {
