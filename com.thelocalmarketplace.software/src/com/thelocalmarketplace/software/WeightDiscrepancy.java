@@ -68,7 +68,7 @@ public class WeightDiscrepancy {
 	}
 	
 	public void exceedWeightEvaluate() {
-		setWeightEcxcess(true);
+		setWeightExcess(true);
 		while(isWeightEcxcess()) {
 			System.out.println("the scale has exceeded its limit. please remove the last item you added.");
 			
@@ -137,7 +137,7 @@ public class WeightDiscrepancy {
 		return weightEcxcess;
 	}
 
-	public void setWeightEcxcess(boolean weightEcxcess) {
+	public void setWeightExcess(boolean weightEcxcess) {
 		this.weightEcxcess = weightEcxcess;
 	}
 }
