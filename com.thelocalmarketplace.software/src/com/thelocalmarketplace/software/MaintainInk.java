@@ -2,6 +2,9 @@ package com.thelocalmarketplace.software;
 
 import com.thelocalmarketplace.hardware.SelfCheckoutStationBronze;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationSilver;
+
+import ca.ucalgary.seng300.simulation.InvalidStateSimulationException;
+
 import com.thelocalmarketplace.hardware.SelfCheckoutStationGold;
 import com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation;
 
@@ -23,8 +26,9 @@ public class MaintainInk {
 	private AbstractSelfCheckoutStation station;
 	
 	/**
-	 * Constructor using a station.
-	 * @param newStation
+	 * Constructor using a station to allow an attendant to simulate
+	 * maintaining available ink for the receipt printer.
+	 * @param usedStation
 	 *    Any particular self checkout station.
 	 */
 	public MaintainInk(AbstractSelfCheckoutStation usedStation) {
@@ -71,7 +75,7 @@ public class MaintainInk {
 					}
 			}
 		} else {
-			//throw an exception
+			throw new InvalidStateSimulationException("Station must be disabled.");
 		}
 	}
 }
