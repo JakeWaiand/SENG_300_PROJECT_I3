@@ -101,7 +101,7 @@ public class StartSession {
 
 	private static Card card1 = new Card("Mastercard" , "1234123412341234", "Arthur Morgan", "420", "1234", true, true);
 	private static Card card2 = new Card("Visa" , "4321432143214321", "Mr Krabs", "999", "4321", true, true);
-	private static Card card3 = new Card("Amex" , "4312431243124312", "Kratos", "666", "1001", false, true);
+	private static Card card3 = new Card("American Express" , "4312431243124312", "Kratos", "666", "1001", false, true);
 
 
 	private static Card mCard1 = new Card("Member" , "4321432143214321", "Dexter", "798", null, true, false);

@@ -1,7 +1,9 @@
 package com.thelocalmarketplace.software;
 
 import com.jjjwelectronics.card.Card;
+import com.jjjwelectronics.card.Card.CardInsertData;
 import com.jjjwelectronics.card.Card.CardSwipeData;
+import com.jjjwelectronics.card.Card.CardTapData;
 import com.thelocalmarketplace.hardware.external.CardIssuer;
 
 import java.util.Scanner;
@@ -57,6 +59,18 @@ public class PayWithDebit {
             identity = true;
         }
     }
+    
+    private static boolean verifyCardHolder(String pin, CardInsertData card) {
+		if (pin.equals(card.getCVV())) {
+			return true;
+		}
+		return false;
+	}
+    
+    
+    
+    
+    
 
     public static void sendMessage(CardSwipeData card, CardIssuer bank, double amount) {
         if (identity) {
@@ -81,7 +95,7 @@ public class PayWithDebit {
         }
     }
 
-    public static void PayByDebit(CardSwipeData card, CardIssuer bank) {
+    public static void PayByDebitSwipe(CardSwipeData card, CardIssuer bank) {
         double amountDue = Add_item.totalPrice;
         System.out.println("please enter your signature");
         Scanner signatureScanner = new Scanner(System.in);
@@ -91,8 +105,90 @@ public class PayWithDebit {
         sendMessage(card, bank, amountDue);
     }
 
-    public static void payment_in_process(CardSwipeData card) {
+    public static void swipePayment(CardSwipeData card) {
         CardIssuer bank = selectCardType();
-        PayByDebit(card, bank);
+        PayByDebitSwipe(card, bank);
     }
+    
+    
+    
+    
+    
+    
+    
+    
+	public static void sendMessage(CardTapData card, CardIssuer bank, double amount) {
+		 bank.unblock(card.getNumber());
+        long holdNumber = bank.authorizeHold(card.getNumber(), amount);
+        boolean postAmount = bank.releaseHold(card.getNumber(), holdNumber);
+
+        if (postAmount) {
+            boolean successful = bank.postTransaction(card.getNumber(), holdNumber, amount);
+
+            if (successful) {
+                System.out.println("Remaining balance: " + (Add_item.totalPrice - amount));
+            }
+        }
+		
+	}
+    
+    
+    public static void PayByDebitTap(CardTapData card, CardIssuer bank) {
+        double amountDue = Add_item.totalPrice;
+        
+        sendMessage(card, bank, amountDue);
+    }
+
+    public static void tapPayment(CardTapData card) {
+        CardIssuer bank = selectCardType();
+        PayByDebitTap(card, bank);
+    }
+	
+    
+    
+    
+    
+    
+    
+    public static void sendMessage(CardInsertData card, CardIssuer bank, double amount) {
+
+            bank.unblock(card.getNumber());
+            long holdNumber = bank.authorizeHold(card.getNumber(), amount);
+            boolean postAmount = bank.releaseHold(card.getNumber(), holdNumber);
+
+            if (postAmount) {
+                boolean successful = bank.postTransaction(card.getNumber(), holdNumber, amount);
+
+                if (successful) {
+                    System.out.println("Remaining balance: " + (Add_item.totalPrice - amount));
+                }
+            }
+        
+		
+	}
+    
+    public static void PayByDebitInsert(CardInsertData card, CardIssuer bank) {
+    	 double amountDue = Add_item.totalPrice;
+    	 System.out.println("please enter your PIN");
+         Scanner pinScanner = new Scanner(System.in);
+         String userPin = pinScanner.next();
+         if(verifyCardHolder(userPin, card)) {
+        	 sendMessage(card, bank, amountDue);
+         }
+         else {
+        	 System.out.print("Entered Pin is wrong");
+         }
+
+	}
+
+
+	public static void insertPayment(CardInsertData card) {
+        CardIssuer bank = selectCardType();
+        PayByDebitInsert(card, bank);
+    }
+
+	
+    
+    
+    
 }
