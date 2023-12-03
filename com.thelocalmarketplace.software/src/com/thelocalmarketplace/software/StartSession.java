@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Currency;
 import java.io.BufferedReader;
@@ -46,68 +47,76 @@ Almik biju 30170902
 */
 
 public class StartSession {
-	public static AbstractSelfCheckoutStation station;
-	public static String level;
-	public static AbstractElectronicScale scale;
-	public static AbstractCardReader cardReader;
-	public static IBarcodeScanner handHeldScanner;
-	public static IBarcodeScanner mainScanner;
-	public static boolean isActive;
-	public static boolean activeSession;
-	public static BanknoteInsertionSlot cashSlot;
-	public static PayWithCash cashListener; 
-	public static boolean paymentSuccessful = false;
+	private AbstractSelfCheckoutStation station;
+	private AbstractElectronicScale scale;
+	private AbstractCardReader cardReader;
+	private IBarcodeScanner handHeldScanner;
+	private IBarcodeScanner mainScanner;
+	private boolean isActive;
+	private boolean activeSession;
+	private BanknoteInsertionSlot cashSlot;
+	private PayWithCash cashListener; 
+	private boolean paymentSuccessful = false;
+	private ItemProcessingControl itemControl;
+	private WeightDiscrepancy WD;
+	private PayWithDebit pay_debit;
+	private PayWithCredit pay_Credit;
+	private EScaleListenerImplement scaleListener;
+	private BarcodeListenerImplement barcodeListener;
+	private CardlistenerImplement cardListener;
+	private AbstractElectronicScale scanScale;
+	private ArrayList<String> pickedItems; //this can be used for print receipt
+	private ArrayList<Long> priceList; //this can be used for print receipt
+	private ArrayList<Mass> weightList;
+	private long totalPrice; //this can be used for print receipt
+	private Mass expectedWeight = new Mass(0);
+	
+
 	
 	
 	
-	public static Currency cad = Currency.getInstance("CAD");
-	public static Banknote banknote5 = new Banknote(cad,new BigDecimal("5")); static Banknote banknote10 = new Banknote(cad,new BigDecimal("10")); static Banknote banknote20 = new Banknote(cad,new BigDecimal("20")); static Banknote banknote50 = new Banknote(cad,new BigDecimal("50")); static Banknote banknote100 = new Banknote(cad,new BigDecimal("100"));
-	public static BigDecimal[] banknoteDenominations = {new BigDecimal("5"),new BigDecimal("10"),new BigDecimal("20"),new BigDecimal("50"),new BigDecimal("100")};
-	public static Banknote[] banknotes = {banknote5, banknote10, banknote20 ,banknote50, banknote100};
+	private Currency cad = Currency.getInstance("CAD");
+	private Banknote banknote5 = new Banknote(cad,new BigDecimal("5")); static Banknote banknote10 = new Banknote(cad,new BigDecimal("10")); static Banknote banknote20 = new Banknote(cad,new BigDecimal("20")); static Banknote banknote50 = new Banknote(cad,new BigDecimal("50")); static Banknote banknote100 = new Banknote(cad,new BigDecimal("100"));
+	private BigDecimal[] banknoteDenominations = {new BigDecimal("5"),new BigDecimal("10"),new BigDecimal("20"),new BigDecimal("50"),new BigDecimal("100")};
+	private Banknote[] banknotes = {banknote5, banknote10, banknote20 ,banknote50, banknote100};
 	
-	public static Coin coin1 = new Coin(cad,new BigDecimal("0.01")); static Coin coin5 = new Coin(cad,new BigDecimal("0.05")); static Coin coin10 = new Coin(cad,new BigDecimal("0.10")); static Coin coin25 = new Coin(cad,new BigDecimal("0.25")); static Coin coin100 = new Coin(cad,new BigDecimal("1")); static Coin coin200 = new Coin(cad,new BigDecimal("2"));
-	public static BigDecimal[] coinDenominations = {new BigDecimal("0.05"), new BigDecimal("0.10"), new BigDecimal("0.25"), new BigDecimal("1"), new BigDecimal("2")};
-	public static Coin[] coins = {coin5,coin10,coin25,coin100,coin200};
+	private Coin coin1 = new Coin(cad,new BigDecimal("0.01")); static Coin coin5 = new Coin(cad,new BigDecimal("0.05")); static Coin coin10 = new Coin(cad,new BigDecimal("0.10")); static Coin coin25 = new Coin(cad,new BigDecimal("0.25")); static Coin coin100 = new Coin(cad,new BigDecimal("1")); static Coin coin200 = new Coin(cad,new BigDecimal("2"));
+	private BigDecimal[] coinDenominations = {new BigDecimal("0.05"), new BigDecimal("0.10"), new BigDecimal("0.25"), new BigDecimal("1"), new BigDecimal("2")};
+	private Coin[] coins = {coin5,coin10,coin25,coin100,coin200};
 	
-	public static BanknoteInsertionSlot banknoteSlot = new BanknoteInsertionSlot();
-	public static BanknoteValidator banknoteValidator = new BanknoteValidator(cad,banknoteDenominations);
+	private BanknoteInsertionSlot banknoteSlot = new BanknoteInsertionSlot();
+	private BanknoteValidator banknoteValidator = new BanknoteValidator(cad,banknoteDenominations);
 	//BanknoteStorageUnit banknoteStorage = new BanknoteStorageUnit();
 	
-	public static CoinSlot coinSlot = new CoinSlot();
-	public static CoinValidator coinValidator = new CoinValidator(cad,Arrays.asList(coinDenominations));
+	private CoinSlot coinSlot = new CoinSlot();
+	private CoinValidator coinValidator = new CoinValidator(cad,Arrays.asList(coinDenominations));
 	
 	
 	
 	
 	public StartSession(AbstractSelfCheckoutStation input_station) throws OverloadedDevice {
-		station = input_station;
-		scale = (AbstractElectronicScale)station.baggingArea;
-		cardReader = (AbstractCardReader)station.cardReader;
-		handHeldScanner = station.handheldScanner;
-		mainScanner = station.mainScanner;
+		setStation(input_station);
+		setScale((AbstractElectronicScale)station.getBaggingArea());
+		cardReader = (AbstractCardReader)station.getCardReader();
+		setHandHeldScanner(station.getHandheldScanner());
+		setMainScanner(station.getMainScanner());
+		setScanScale((AbstractElectronicScale) station.getScanningArea());
 		station.turnOn();
-		if (station instanceof SelfCheckoutStationBronze) {
-			level = "bronze";
-		}
-		else if (station instanceof SelfCheckoutStationSilver) {
-			level = "silver";
-		}
-		else if (station instanceof SelfCheckoutStationGold){
-			level = "gold";
-		}
-		Add_item addItem = new Add_item();
-		WeightDiscrepancy WD = new WeightDiscrepancy();
-		PayWithDebit pay_debit = new PayWithDebit();
-		PayWithCredit pay_Credit = new PayWithCredit();
-		EScaleListenerImplement scaleListener = new EScaleListenerImplement();
-		BarcodeListenerImplement barcodeListener = new BarcodeListenerImplement();
-		CardlistenerImplement cardListener = new CardlistenerImplement();
-		scale.register(scaleListener);
+		
+		setWD(new WeightDiscrepancy(this));
+		setItemControl(new ItemProcessingControl(this));
+		pay_debit = new PayWithDebit();
+		pay_Credit = new PayWithCredit();
+		scaleListener = new EScaleListenerImplement(this);
+		barcodeListener = new BarcodeListenerImplement(this);
+		cardListener = new CardlistenerImplement();
+		getScale().register(scaleListener);
 		cardReader.register(cardListener);
-		handHeldScanner.register(barcodeListener);
-		mainScanner.register(barcodeListener);
+		getHandHeldScanner().register(barcodeListener);
+		getMainScanner().register(barcodeListener);
 		cashSlot.attach(cashListener);
 		isActive = true;
+		getScanScale().register(scaleListener);
 		displaySplashScreen();
 		listenForInput();
 		
@@ -125,12 +134,12 @@ public class StartSession {
    
     public void displaySplashScreen() throws OverloadedDevice {
         System.out.println("Press anywhere to start");
-        handHeldScanner.enable();
-        mainScanner.enable();
+        getHandHeldScanner().enable();
+        getMainScanner().enable();
         cardReader.enable();
-        scale.enable();
+        getScale().enable();
         cashSlot.enable();
-        station.coinSlot.enable();
+        station.getCoinSlot().enable();
     }
      public void listenForInput() throws OverloadedDevice {
         System.out.println("waiting......");
@@ -157,16 +166,162 @@ public class StartSession {
   
  
     public void endSession() throws OverloadedDevice {
-    	 handHeldScanner.disable();
-         mainScanner.disable();
+    	 getHandHeldScanner().disable();
+         getMainScanner().disable();
          cardReader.disable();
-         scale.disable();
+         getScale().disable();
          cashSlot.disable();
-         station.coinSlot.disable();
+         station.getCoinSlot().disable();   //changes need to be made
+         station.getScanningArea().disable();
         
     }
 	
-	
+
+
+
+	public AbstractSelfCheckoutStation getStation() {
+		return station;
+	}
+
+
+
+	public void setStation(AbstractSelfCheckoutStation station) {
+		this.station = station;
+	}
+
+
+
+	public ItemProcessingControl getItemControl() {
+		return itemControl;
+	}
+
+
+
+	public void setItemControl(ItemProcessingControl itemControl) {
+		this.itemControl = itemControl;
+	}
+
+
+
+	public AbstractElectronicScale getScanScale() { // for the plu items
+		return scanScale;
+	}
+
+
+
+	public void setScanScale(AbstractElectronicScale scanScale) {
+		this.scanScale = scanScale;
+	}
+
+
+
+	public AbstractElectronicScale getScale() {
+		return scale;
+	}
+
+
+
+	public void setScale(AbstractElectronicScale scale) {
+		this.scale = scale;
+	}
+
+
+
+	public IBarcodeScanner getHandHeldScanner() {
+		return handHeldScanner;
+	}
+
+
+
+	public void setHandHeldScanner(IBarcodeScanner handHeldScanner) {
+		this.handHeldScanner = handHeldScanner;
+	}
+
+
+
+	public IBarcodeScanner getMainScanner() {
+		return mainScanner;
+	}
+
+
+
+	public void setMainScanner(IBarcodeScanner mainScanner) {
+		this.mainScanner = mainScanner;
+	}
+
+
+
+
+
+	public ArrayList<String> getPickedItems() {
+		return pickedItems;
+	}
+
+
+
+	public void setPickedItems(ArrayList<String> pickedItems) {
+		this.pickedItems = pickedItems;
+	}
+
+
+
+	public long getTotalPrice() {
+		return totalPrice;
+	}
+
+
+
+	public void setTotalPrice(long totalPrice) {
+		this.totalPrice = totalPrice;
+	}
+
+
+
+	public ArrayList<Long> getPriceList() {
+		return priceList;
+	}
+
+
+
+	public void setPriceList(ArrayList<Long> priceList) {
+		this.priceList = priceList;
+	}
+
+
+
+	public Mass getExpectedWeight() {
+		return expectedWeight;
+	}
+
+
+
+	public void setExpectedWeight(Mass expectedWeight) {
+		this.expectedWeight = expectedWeight;
+	}
+
+
+
+	public ArrayList<Mass> getWeightList() {
+		return weightList;
+	}
+
+
+
+	public void setWeightList(ArrayList<Mass> weightList) {
+		this.weightList = weightList;
+	}
+
+
+
+	public WeightDiscrepancy getWD() {
+		return WD;
+	}
+
+
+
+	public void setWD(WeightDiscrepancy wD) {
+		WD = wD;
+	}
 
 	
 	
