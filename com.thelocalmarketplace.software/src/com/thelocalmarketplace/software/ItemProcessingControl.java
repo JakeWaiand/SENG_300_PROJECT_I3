@@ -51,6 +51,7 @@ public class ItemProcessingControl {
     private StartSession session;
 	private boolean itemScanned;
 	private PriceLookUpCode PLUcode;
+	private Mass SpecialCircumstanceMass; 
 
   
     	
@@ -60,6 +61,8 @@ public class ItemProcessingControl {
     	station = session.getStation();
     	itemScanned = false;
     }
+    
+  
     
   
     /**
@@ -176,10 +179,11 @@ public class ItemProcessingControl {
 		
 	}
 	
-	public void setPLUCode(PriceLookUpCode code) {
+	public void setPLUCode(PriceLookUpCode code) { //Gui should call this
 		PLUcode = code;
 		session.getHandHeldScanner().disable();  // just to make sure no item is being scanned at the same time
-		session.getMainScanner().disable();    // even though weightdiscrepancy also does this
+		session.getMainScanner().disable();       // even though weightdiscrepancy also does this
+		session.getScaleListener().setPLUItemIncoming(true); 										
 		
 	}
 
@@ -188,11 +192,40 @@ public class ItemProcessingControl {
 	   addItem(session.getStation(), description, price, weight);
 	   
    }
-   public void addItemTextSearch(String itemName) {
-	   //to be implemented
+   
+   /*
+    * /**
+    * 
+    * adds an item, through text search done by the attendant
+    * @param description description of the item, 
+    * @param product the product
+    * @param weight the expected weight of the item
+    */
+   
+   public void addItemTextSearch(String description, Product product, Double weight) { //need from Gui
+	  Mass mass = new Mass(weight);
+	  addItem(session.getStation(), description, product.getPrice(), mass);
 	   
 	   
    }
+   /*
+    * this is only for when the attendant is adding an item that must be weighed
+    * @param mass is the mass on scale
+    */
+   public void setMass(Mass mass) {
+	   SpecialCircumstanceMass = mass;
+   }
+   
+   /**
+    * adds an item, through text search done by the attendant
+    * this item must be weighed
+    * @param description description of the item, 
+    * @param product the product
+    */
+   public void addItemTextSearch_mustBeWeighed(String description, Product product) {
+	   addItem(session.getStation(), description, product.getPrice(), SpecialCircumstanceMass);
+   }
+   
    
    public void removeItem(Barcode barcode) {
 		if (remove_item == true) {

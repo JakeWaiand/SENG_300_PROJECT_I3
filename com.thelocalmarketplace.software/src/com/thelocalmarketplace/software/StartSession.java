@@ -107,16 +107,16 @@ public class StartSession {
 		setItemControl(new ItemProcessingControl(this));
 		pay_debit = new PayWithDebit();
 		pay_Credit = new PayWithCredit();
-		scaleListener = new EScaleListenerImplement(this);
+		setScaleListener(new EScaleListenerImplement(this));
 		barcodeListener = new BarcodeListenerImplement(this);
 		cardListener = new CardlistenerImplement();
-		getScale().register(scaleListener);
+		getScale().register(getScaleListener());
 		cardReader.register(cardListener);
 		getHandHeldScanner().register(barcodeListener);
 		getMainScanner().register(barcodeListener);
 		cashSlot.attach(cashListener);
 		isActive = true;
-		getScanScale().register(scaleListener);
+		getScanScale().register(getScaleListener());
 		displaySplashScreen();
 		listenForInput();
 		
@@ -321,6 +321,18 @@ public class StartSession {
 
 	public void setWD(WeightDiscrepancy wD) {
 		WD = wD;
+	}
+
+
+
+	public EScaleListenerImplement getScaleListener() {
+		return scaleListener;
+	}
+
+
+
+	public void setScaleListener(EScaleListenerImplement scaleListener) {
+		this.scaleListener = scaleListener;
 	}
 
 	
