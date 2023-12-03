@@ -14,6 +14,10 @@ public class PayWithDebit {
     public PayWithDebit(StartSession session) {
     	this.session = session;
     }
+    
+    public boolean getIdentity() {
+    	return identity;
+    }
 
     public CardIssuer selectCardType() {
         Scanner scanner = new Scanner(System.in);
@@ -86,11 +90,11 @@ public class PayWithDebit {
         }
     }
 
-    public void PayByDebit(CardSwipeData card, CardIssuer bank) {
+    public void payByDebit(CardSwipeData card, CardIssuer bank) {
         double amountDue = session.getTotalPrice();
         System.out.println("please enter your signature");
         Scanner signatureScanner = new Scanner(System.in);
-        String userSignature = signatureScanner.next();
+        String userSignature = signatureScanner.nextLine();
 
         verifyCardHolder(userSignature, card);
         sendMessage(card, bank, amountDue);
@@ -98,6 +102,6 @@ public class PayWithDebit {
 
     public void payment_in_process(CardSwipeData card) {
         CardIssuer bank = selectCardType();
-        PayByDebit(card, bank);
+        payByDebit(card, bank);
     }
 }
