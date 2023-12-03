@@ -45,6 +45,8 @@ Yasna Naseri  30182402
 Muhammad Niazi 30177775
 Yasir Hussain 30195085
 Almik biju 30170902 
+
+Dongwen Tian 30181813
 */
 
 public class StartSession {
@@ -54,8 +56,8 @@ public class StartSession {
 	private IBarcodeScanner handHeldScanner;
 	private IBarcodeScanner mainScanner;
 	private boolean isActive;
-	private boolean activeSession;
 	private BanknoteInsertionSlot cashSlot;
+	
 	private PayWithCash cashListener; 
 	private boolean paymentSuccessful = false;
 	private ItemProcessingControl itemControl;
@@ -99,8 +101,6 @@ public class StartSession {
 	private CoinValidator coinValidator = new CoinValidator(cad,Arrays.asList(coinDenominations));
 	
 	
-	
-	
 	public StartSession(AbstractSelfCheckoutStation input_station) throws OverloadedDevice, EmptyDevice {
 		setStation(input_station);
 		setScale((AbstractElectronicScale)station.getBaggingArea());
@@ -108,27 +108,47 @@ public class StartSession {
 		setHandHeldScanner(station.getHandheldScanner());
 		setMainScanner(station.getMainScanner());
 		setScanScale((AbstractElectronicScale) station.getScanningArea());
-		station.turnOn();
+		
+		/* 
+		 * Turn on should not be called in StartSession, the selfCheckoutStation being turned on
+		 * should be necessary for StartSession to be called in the first place.
+		 * Dongwen
+		*/
+		//station.turnOn();
 		
 		setWD(new WeightDiscrepancy(this));
 		setItemControl(new ItemProcessingControl(this));
 		pay_debit = new PayWithDebit(this);
 		pay_Credit = new PayWithCredit(this);
-		pay_Cash = new PayWithCash(this);
 		printReceipt = new PrintReceipt(this);
 		
 		setScaleListener(new EScaleListenerImplement(this));
 		barcodeListener = new BarcodeListenerImplement(this);
 		cardListener = new CardlistenerImplement();
+		
+		PayWithCash.setSession(this);
+		cashSlot = input_station.getBanknoteInput();
+
 		getScale().register(getScaleListener());
 		cardReader.register(cardListener);
 		getHandHeldScanner().register(barcodeListener);
 		getMainScanner().register(barcodeListener);
-		cashSlot.attach(cashListener);
+		cashSlot.attach(new PayWithCash());
 		isActive = true;
 		getScanScale().register(getScaleListener());
-		displaySplashScreen();
-		listenForInput();
+		
+		/*
+		 * The welcome screen should already be displayed before startSession is called
+		 * (The screen should be displayed when the station is turned on eg. when aComponentWasTurnedOn
+		 * event is called, there was some event like that in the hardware)
+		 * 
+		 * Listen for input should also not be here, instead, StartSession should be called after there is input, 
+		 * instead of listening for input after startSession is called
+		 * 
+		 * Dongwen
+		 */
+		//displaySplashScreen();
+		//listenForInput();
 		
 		
 		input_station.configureBanknoteDenominations(banknoteDenominations);
@@ -183,6 +203,13 @@ public class StartSession {
          cashSlot.disable();
          station.getCoinSlot().disable();   //changes need to be made
          station.getScanningArea().disable();
+         
+         /*
+          * lol, someone forgot to change isActive to false when ending the session, I had to add it in
+          * 
+          * Dongwen
+          */
+         isActive = false;
         
     }
 	

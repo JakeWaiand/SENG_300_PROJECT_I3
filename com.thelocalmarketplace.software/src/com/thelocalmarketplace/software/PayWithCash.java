@@ -43,18 +43,20 @@ Yasna Naseri  30182402
 Muhammad Niazi 30177775
 Yasir Hussain 30195085
 Almik biju 30170902 
+
+Dongwen Tian 30181813
 */
 public class PayWithCash implements BanknoteInsertionSlotObserver,CoinSlotObserver,BanknoteDispensationSlotObserver{
 	private Scanner scanner;
-	private StartSession session;
+	private static StartSession session;
 	
-	public PayWithCash(StartSession session) {
-        this.session = session;
-    }
+	public static void setSession(StartSession session) {
+		PayWithCash.session = session;
+	}
 	
 	// So i made the methods "void", but i don't know what the other parts of the system wait for when they call this class and these methods, so if there is a need to change something, just text me (Firdovsi)
-	public Coin coinInserted = new Coin(null);
-	public Banknote banknoteInserted = new Banknote(null,null);
+	public Coin coinInserted;
+	public Banknote banknoteInserted;
 	
 	public void setInsertedCoin(Coin newCoin) {
 		coinInserted = newCoin;

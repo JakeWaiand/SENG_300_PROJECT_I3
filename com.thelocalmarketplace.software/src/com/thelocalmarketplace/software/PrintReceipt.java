@@ -21,6 +21,8 @@ Yasna Naseri  30182402
 Muhammad Niazi 30177775
 Yasir Hussain 30195085
 Almik biju 30170902 
+
+Dongwen Tian 30181813
 */
 
 
@@ -36,15 +38,6 @@ public class PrintReceipt implements ReceiptPrinterListener{
 		
 		String record = new String();
 		record = "";
-	
-		for(int i = 0; itemlist.size() > i; i++) {
-		record += (itemlist.get(i) + "                " + priceList.get(i));
-		}
-		for (int i = 0; record.length() > i; i++) {
-			session.getStation().getPrinter().print(record.charAt(i));
-			
-		}
-		
 	}	
 	
 	/**

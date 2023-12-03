@@ -41,7 +41,10 @@ Yasna Naseri  30182402
 Muhammad Niazi 30177775
 Yasir Hussain 30195085
 Almik biju 30170902
+
+Dongwen Tian 30181813
 */
+
 public class ItemProcessingControl {
 	private Mass productsWeight;
 	private long productsPrice;
