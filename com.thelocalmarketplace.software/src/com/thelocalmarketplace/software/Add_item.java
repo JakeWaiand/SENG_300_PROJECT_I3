@@ -39,6 +39,7 @@ Yasir Hussain 30195085
 Almik biju 30170902 
 */
 public class Add_item {
+}
 	private static BarcodedProduct product;
 	private static boolean itemScanned = false;
 	public static ArrayList<String> pickedItems; //this can be used for print receipt

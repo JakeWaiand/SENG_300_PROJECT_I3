@@ -5,13 +5,16 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Currency;
+import java.util.GregorianCalendar;
 import java.io.BufferedReader;
 
 import com.jjjwelectronics.Mass;
 import com.jjjwelectronics.Numeral;
 import com.jjjwelectronics.OverloadedDevice;
 import com.jjjwelectronics.card.AbstractCardReader;
+import com.jjjwelectronics.card.Card;
 import com.jjjwelectronics.scale.*;
 import com.jjjwelectronics.scanner.Barcode;
 import com.jjjwelectronics.scanner.*;
@@ -29,6 +32,7 @@ import com.thelocalmarketplace.hardware.CoinTray;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationBronze;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationSilver;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationGold;
+import com.thelocalmarketplace.hardware.external.CardIssuer;
 import com.thelocalmarketplace.hardware.external.ProductDatabases;
 
 /*
@@ -85,6 +89,27 @@ public class StartSession {
 	private static CoinValidator coinValidator = new CoinValidator(cad,Arrays.asList(coinDenominations));
 	
 	
+
+	
+	
+	private static Calendar calendar = new GregorianCalendar(2027,2,31);
+	
+	private static CardIssuer bank1 = new CardIssuer("CIBC",5);
+	private static CardIssuer bank2 = new CardIssuer("RBC",7);
+	private static CardIssuer bank3 = new CardIssuer("TD",9);
+
+
+	private static Card card1 = new Card("Mastercard" , "1234123412341234", "Arthur Morgan", "420", "1234", true, true);
+	private static Card card2 = new Card("Visa" , "4321432143214321", "Mr Krabs", "999", "4321", true, true);
+	private static Card card3 = new Card("Amex" , "4312431243124312", "Kratos", "666", "1001", false, true);
+
+
+	private static Card mCard1 = new Card("Member" , "4321432143214321", "Dexter", "798", null, true, false);
+	private static Card mCard2 = new Card("Member" , "1243124312431243", "Alice", "876", null, false, false);
+	private static Card mCard3 = new Card("Member" , "1243124312431243", "Peter Griffin", "942", null, false, false);
+	
+	
+	
 	
 	
 	public StartSession(AbstractSelfCheckoutStation input_station) throws OverloadedDevice {
@@ -112,6 +137,11 @@ public class StartSession {
 		getScanScale().register(scaleListener);
 		displaySplashScreen();
 		listenForInput();
+		
+		
+		bank1.addCardData("1234123412341234", "Arthur Morgan", calendar, "420", 10000.0);
+		bank2.addCardData("4321432143214321", "Mr Krabs", calendar, "999", 25000.0);
+		bank3.addCardData("4312431243124312", "Kratos", calendar, "666", 94550.0);
 		
 		
 		input_station.configureBanknoteDenominations(banknoteDenominations);
