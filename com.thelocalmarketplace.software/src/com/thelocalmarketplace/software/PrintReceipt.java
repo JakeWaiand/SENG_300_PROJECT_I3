@@ -41,11 +41,10 @@ public class PrintReceipt implements ReceiptPrinterListener{
 	private ArrayList<String> itemlist;
 	private ArrayList<Long> priceList;
 	private StartSession session;
+	
 	public PrintReceipt(StartSession session) throws EmptyDevice, OverloadedDevice {
 		this.session = session;
-		itemlist = session.getPickedItems();
-		priceList = session.getPriceList();
-		
+
 		String record = new String();
 		record = "";
 	}	
