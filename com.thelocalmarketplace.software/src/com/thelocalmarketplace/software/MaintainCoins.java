@@ -52,7 +52,7 @@ public class MaintainCoins {
 	public List<Coin> removeCoins(int quantity) throws CashOverloadException {
 		List<Coin> removedCoins;
 		
-		if ((station.getCoinStorage().isDisabled()) && (quantity < station.getCoinStorage().getCoinCount())) {
+		if ((station.getCoinStorage().isDisabled()) && (quantity <= station.getCoinStorage().getCoinCount())) {
 			
 			removedCoins = station.getCoinStorage().unload();
 			
