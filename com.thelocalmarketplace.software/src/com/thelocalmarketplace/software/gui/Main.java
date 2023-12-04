@@ -2,8 +2,10 @@ package com.thelocalmarketplace.software.gui;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
-
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
@@ -31,6 +33,14 @@ public class Main {
 
         // start.setVerticalAlignment(SwingConstants.CENTER);
         // start.setHorizontalAlignment(SwingConstants.CENTER);
+
+
+        JButton goToAddItem = new JButton("Start Session");
+        goToAddItem.addMouseListener(new MouseAdapter() {
+            public void mouseClick(MouseEvent e){
+                
+            }
+        });
 
 
 
