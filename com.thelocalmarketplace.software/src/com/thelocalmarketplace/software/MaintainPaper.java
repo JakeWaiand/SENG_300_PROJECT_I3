@@ -10,11 +10,6 @@ import com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation;
 
 import com.jjjwelectronics.OverloadedDevice;
 
-import com.jjjwelectronics.printer.ReceiptPrinterListener;
-import com.jjjwelectronics.printer.ReceiptPrinterBronze;
-import com.jjjwelectronics.printer.ReceiptPrinterSilver;
-import com.jjjwelectronics.printer.ReceiptPrinterGold;
-
 public class MaintainPaper {
 
 	private final int GOLD = 2;
