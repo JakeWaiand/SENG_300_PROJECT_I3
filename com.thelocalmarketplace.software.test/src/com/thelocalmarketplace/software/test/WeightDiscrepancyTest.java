@@ -8,7 +8,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.jjjwelectronics.Mass;
-import com.thelocalmarketplace.software.Add_item;
 import com.thelocalmarketplace.software.WeightDiscrepancy;
 
 /*

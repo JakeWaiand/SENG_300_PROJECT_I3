@@ -7,7 +7,6 @@ import com.jjjwelectronics.scanner.BarcodeScannerListener;
 import com.jjjwelectronics.scanner.IBarcodeScanner;
 import com.thelocalmarketplace.hardware.BarcodedProduct;
 import com.thelocalmarketplace.hardware.external.ProductDatabases;
-import com.thelocalmarketplace.Add_item;
 
 /*
 Kimih Yan 30160567
@@ -21,6 +20,8 @@ Yasna Naseri  30182402
 Muhammad Niazi 30177775
 Yasir Hussain 30195085
 Almik biju 30170902 
+
+Dongwen Tian 30181813
 */
 public class BarcodeListenerImplement implements BarcodeScannerListener {
 	private StartSession session;

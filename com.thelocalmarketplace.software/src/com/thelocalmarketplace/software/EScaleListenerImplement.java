@@ -19,12 +19,16 @@ Yasna Naseri  30182402
 Muhammad Niazi 30177775
 Yasir Hussain 30195085
 Almik biju 30170902 
+
+Dongwen Tian 30181813
 */
 
 public class EScaleListenerImplement implements ElectronicScaleListener {
-	StartSession session;
+	private StartSession session;
+	private boolean PLUItemIncoming;
 	public EScaleListenerImplement(StartSession session) {
 		this.session = session;
+		setPLUItemIncoming(false);
 	}
 	@Override
 	public void aDeviceHasBeenEnabled(IDevice<? extends IDeviceListener> device) {
@@ -63,8 +67,15 @@ public class EScaleListenerImplement implements ElectronicScaleListener {
 			}
 		}
 		else if (scale == session.getScanScale()) {
-			session.getItemControl().addItemPLU(mass);
-		}
+			if(PLUItemIncoming) {
+				session.getItemControl().addItemPLU(mass);
+				setPLUItemIncoming(false);
+			}
+			else {
+				session.getItemControl().setMass(mass);
+				
+			}
+		}	
 		
 		
 	}
@@ -78,8 +89,14 @@ public class EScaleListenerImplement implements ElectronicScaleListener {
 
 	@Override
 	public void theMassOnTheScaleNoLongerExceedsItsLimit(IElectronicScale scale) {
-		session.getWD().setWeightEcxcess(false);
+		session.getWD().setWeightExcess(false);
 	
+	}
+	public boolean isPLUItemIncoming() {
+		return PLUItemIncoming;
+	}
+	public void setPLUItemIncoming(boolean pLUItemIncomming) {
+		PLUItemIncoming = pLUItemIncomming;
 	}
 
 }

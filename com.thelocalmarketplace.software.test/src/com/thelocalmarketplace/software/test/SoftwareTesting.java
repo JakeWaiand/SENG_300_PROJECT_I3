@@ -13,8 +13,7 @@ import com.jjjwelectronics.Mass;
 import com.jjjwelectronics.Numeral;
 import com.jjjwelectronics.scanner.Barcode;
 import com.jjjwelectronics.scanner.BarcodedItem;
-import com.thelocalmarketplace.hardware.SelfCheckoutStation;
-import com.thelocalmarketplace.software.Session;
+import com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation;
 import com.thelocalmarketplace.software.StartSession;
 
 import powerutility.PowerGrid;
@@ -47,7 +46,7 @@ public class SoftwareTesting {
 	ArrayList<BarcodedItem> orderItems;
 	Numeral[] testCode = {Numeral.one,Numeral.two,Numeral.three,Numeral.four};
 	Barcode testBarcode = new Barcode(testCode);
-	SelfCheckoutStation selfCheckoutStation = new SelfCheckoutStation();
+	AbstractSelfCheckoutStation selfCheckoutStation = new SelfCheckoutStationBronze();
 	double testWeight = 5.0;
 
 	Mass testMass = new Mass(2L);

@@ -9,7 +9,11 @@ import com.jjjwelectronics.OverloadedDevice;
 import com.jjjwelectronics.printer.ReceiptPrinterListener;
 
 
+
 /*
+=======
+/* USES ITERATION 2 CODE FROM GROUP 21
+
 Kimih Yan 30160567
 Kenny Zeng 30151985 
 Daniel Adebisi 30179418
@@ -21,26 +25,35 @@ Yasna Naseri  30182402
 Muhammad Niazi 30177775
 Yasir Hussain 30195085
 Almik biju 30170902 
+
+
+Dongwen Tian 30181813
+=======
+
 */
 
 
 
 public class PrintReceipt implements ReceiptPrinterListener{
-	public static ArrayList<String> itemlist = Add_item.pickedItems;
-	public static ArrayList<Long> priceList = Add_item.priceList;
-	public static void printReceipt() throws EmptyDevice, OverloadedDevice {
+
+  //rewrite some of this
+  
+	private ArrayList<String> itemlist;
+	private ArrayList<Long> priceList;
+	private StartSession session;
+	public PrintReceipt(StartSession session) throws EmptyDevice, OverloadedDevice {
+		this.session = session;
+		itemlist = session.getPickedItems();
+		priceList = session.getPriceList();
+		
 		String record = new String();
 		record = "";
-	
-		for(int i = 0; itemlist.size() > i; i++) {
-		record += (itemlist.get(i) + "                " + priceList.get(i));
-		}
-		for (int i = 0; record.length() > i; i++) {
-			StartSession.station.printer.print(record.charAt(i));
-			
-		}
-		
 	}	
+	
+	private void makeReceipt() {
+		
+	}
+
 	
 	/**
 	 * Announces that the printer is out of paper.
