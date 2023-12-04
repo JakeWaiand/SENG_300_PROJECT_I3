@@ -6,6 +6,7 @@ import com.jjjwelectronics.card.Card.CardSwipeData;
 import com.jjjwelectronics.card.Card.CardTapData;
 import com.thelocalmarketplace.hardware.external.CardIssuer;
 
+import java.io.IOException;
 import java.util.Scanner;
 
 public class PayWithDebit {
@@ -63,8 +64,8 @@ public class PayWithDebit {
         return bank;
     }
 
-    public static void verifyCardHolder(String signature, CardSwipeData card) {
-        if (signature.equals(card.getCardholder())) {
+    public static void verifyCardHolder(String signature, Card card) {
+        if (signature.equals(card.cardholder)) {
             identity = true;
         }
         else {
@@ -112,18 +113,21 @@ public class PayWithDebit {
         }
     }
 
-    public static void PayByDebitSwipe(CardSwipeData card, CardIssuer bank) {
-        double amountDue = Add_item.totalPrice;
+    public static void PayByDebitSwipe(Card card, CardIssuer bank) throws IOException {
+        double amountDue = session.getTotalPrice();
 
         System.out.println("please enter your signature");
         Scanner signatureScanner = new Scanner(System.in);
         String userSignature = signatureScanner.nextLine();
 
         verifyCardHolder(userSignature, card);
+        
+        session.cardReader.swipe(card);
+        
         sendMessage(card, bank, amountDue);
     }
 
-    public static void swipePayment(CardSwipeData card) {
+    public static void swipePayment(Card card) {
         CardIssuer bank;
 		
 			bank = selectCardType();
@@ -137,29 +141,29 @@ public class PayWithDebit {
     
     
     
-	public static void sendMessage(CardTapData card, CardIssuer bank, double amount) {
-		 bank.unblock(card.getNumber());
-        long holdNumber = bank.authorizeHold(card.getNumber(), amount);
-        boolean postAmount = bank.releaseHold(card.getNumber(), holdNumber);
+	public static void sendMessage(Card card, CardIssuer bank, double amount) {
+		 bank.unblock(card.number);
+        long holdNumber = bank.authorizeHold(card.number, amount);
+        boolean postAmount = bank.releaseHold(card.number, holdNumber);
 
         if (postAmount) {
-            boolean successful = bank.postTransaction(card.getNumber(), holdNumber, amount);
+            boolean successful = bank.postTransaction(card.number, holdNumber, amount);
 
             if (successful) {
-                System.out.println("Remaining balance: " + (Add_item.totalPrice - amount));
+                System.out.println("Remaining balance: " + (session.getTotalPrice() - amount));
             }
         }
 		
 	}
     
     
-    public static void PayByDebitTap(CardTapData card, CardIssuer bank) {
-        double amountDue = Add_item.totalPrice;
-        
+    public static void PayByDebitTap(Card card, CardIssuer bank) throws IOException {
+        double amountDue = session.getTotalPrice();
+        session.cardReader.tap(card);
         sendMessage(card, bank, amountDue);
     }
 
-    public static void tapPayment(CardTapData card) {
+    public static void tapPayment(Card card) throws IOException {
         CardIssuer bank = selectCardType();
         PayByDebitTap(card, bank);
     }
@@ -171,7 +175,6 @@ public class PayWithDebit {
     
     
     public static void sendMessage(CardInsertData card, CardIssuer bank, double amount) {
-
             bank.unblock(card.getNumber());
             long holdNumber = bank.authorizeHold(card.getNumber(), amount);
             boolean postAmount = bank.releaseHold(card.getNumber(), holdNumber);
@@ -180,29 +183,24 @@ public class PayWithDebit {
                 boolean successful = bank.postTransaction(card.getNumber(), holdNumber, amount);
 
                 if (successful) {
-                    System.out.println("Remaining balance: " + (Add_item.totalPrice - amount));
+                    System.out.println("Remaining balance: " + (session.getTotalPrice() - amount));
                 }
             }
-        
+            session.cardReader.remove();
 		
 	}
     
-    public static void PayByDebitInsert(CardInsertData card, CardIssuer bank) {
-    	 double amountDue = Add_item.totalPrice;
+    public static void PayByDebitInsert(Card card, CardIssuer bank) throws IOException {
+    	 double amountDue = session.getTotalPrice();
     	 System.out.println("please enter your PIN");
          Scanner pinScanner = new Scanner(System.in);
          String userPin = pinScanner.next();
-         if(verifyCardHolder(userPin, card)) {
-        	 sendMessage(card, bank, amountDue);
-         }
-         else {
-        	 System.out.print("Entered Pin is wrong");
-         }
-
+         session.cardReader.insert(card, userPin);
+         sendMessage((CardInsertData) session.cardReader.insert(card, userPin),bank,amountDue);
 	}
 
 
-	public static void insertPayment(CardInsertData card) {
+	public static void insertPayment(Card card) throws IOException {
         CardIssuer bank = selectCardType();
         PayByDebitInsert(card, bank);
     }

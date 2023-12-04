@@ -1,51 +1,42 @@
 package com.thelocalmarketplace.software;
 
-
-import java.util.Scanner;
-
+import com.jjjwelectronics.card.Card;
 import com.jjjwelectronics.card.Card.CardInsertData;
 import com.jjjwelectronics.card.Card.CardSwipeData;
 import com.jjjwelectronics.card.Card.CardTapData;
 import com.thelocalmarketplace.hardware.external.CardIssuer;
 
-/*
-Kimih Yan 30160567
-Kenny Zeng 30151985 
-Daniel Adebisi 30179418
-Kourosh Malayeri 30174987
-Tahamina Chowdhury 30140920
-Firdovsi Aliyev 30178471
-Hasan Qasim 30164530
-Yasna Naseri  30182402
-Muhammad Niazi 30177775
-Yasir Hussain 30195085
-Almik biju 30170902 
-
-Dongwen Tian 30181813
-*/
+import java.io.IOException;
+import java.util.Scanner;
 
 public class PayWithCredit {
 
     private static boolean identity = false;
-	private static StartSession session;
+    private static StartSession session;
+    
+    public PayWithCredit(StartSession session) {
+    	this.session = session;
+    }
+    
+    public boolean getIdentity() {
+    	return identity;
+    }
+
     public static CardIssuer selectCardType() {
-    	
         Scanner scanner = new Scanner(System.in);
         int cardTypeInt;
 
         do {
-            System.out.println("Enter the number that corresponds to the type of card you have:");
+            System.out.println("Enter the number that corresponds to type of card you have:");
             System.out.println("1 for Mastercard");
             System.out.println("2 for Visa");
             System.out.println("3 for American Express");
-
-            // Line to ensure input is a number of type int
+            
             while (!scanner.hasNextInt()) {
                 System.out.println("Invalid input. Please enter a number.");
                 scanner.next();
             }
 
-            // Ensure that the cardTypeInt is a value between 1-3, the possible options
             cardTypeInt = scanner.nextInt();
 
             if (cardTypeInt < 1 || cardTypeInt > 3) {
@@ -55,29 +46,30 @@ public class PayWithCredit {
 
         String selectedCard;
 
-        // Switch statement to turn int value into a string for more eligible work
         switch (cardTypeInt) {
             case 1:
-                selectedCard = "Visa";
+                selectedCard = "Mastercard";
                 break;
             case 2:
-                selectedCard = "Mastercard";
+                selectedCard = "Visa";
                 break;
             case 3:
                 selectedCard = "American Express";
                 break;
             default:
                 selectedCard = "Unknown";
-                break;
         }
 
         CardIssuer bank = new CardIssuer(selectedCard, 5);
         return bank;
     }
 
-    public static void verifyCardHolder(String signature, CardSwipeData card) {
-        if (signature.equals(card.getCardholder())) {
+    public static void verifyCardHolder(String signature, Card card) {
+        if (signature.equals(card.cardholder)) {
             identity = true;
+        }
+        else {
+        	identity = false;
         }
     }
     
@@ -96,13 +88,16 @@ public class PayWithCredit {
     public static void sendMessage(CardSwipeData card, CardIssuer bank, double amount) {
         if (identity) {
             boolean cardRead = false;
-
+            
+            /*
             while (!cardRead) {
                 System.out.println("please swipe again");
                 cardRead = bank.block(card.getNumber());
             }
+            */
 
-            bank.unblock(card.getNumber());
+            //bank.unblock(card.getNumber());
+            
             long holdNumber = bank.authorizeHold(card.getNumber(), amount);
             boolean postAmount = bank.releaseHold(card.getNumber(), holdNumber);
 
@@ -112,22 +107,30 @@ public class PayWithCredit {
                 if (successful) {
                     System.out.println("Remaining balance: " + (session.getTotalPrice() - amount));
                 }
+            } else {
+            	identity = false;
             }
         }
     }
 
-    public static void PayByCreditSwipe(CardSwipeData card, CardIssuer bank) {
-        double amountDue = Add_item.totalPrice;
+    public static void PayByCreditSwipe(Card card, CardIssuer bank) throws IOException {
+        double amountDue = session.getTotalPrice();
+
         System.out.println("please enter your signature");
         Scanner signatureScanner = new Scanner(System.in);
-        String userSignature = signatureScanner.next();
+        String userSignature = signatureScanner.nextLine();
 
         verifyCardHolder(userSignature, card);
+        
+        session.cardReader.swipe(card);
+        
         sendMessage(card, bank, amountDue);
     }
 
-    public static void swipePayment(CardSwipeData card) {
-        CardIssuer bank = selectCardType();
+    public static void swipePayment(Card card) {
+        CardIssuer bank;
+		
+			bank = selectCardType();
         PayByCreditSwipe(card, bank);
     }
     
@@ -138,29 +141,29 @@ public class PayWithCredit {
     
     
     
-	public static void sendMessage(CardTapData card, CardIssuer bank, double amount) {
-		 bank.unblock(card.getNumber());
-        long holdNumber = bank.authorizeHold(card.getNumber(), amount);
-        boolean postAmount = bank.releaseHold(card.getNumber(), holdNumber);
+	public static void sendMessage(Card card, CardIssuer bank, double amount) {
+		 bank.unblock(card.number);
+        long holdNumber = bank.authorizeHold(card.number, amount);
+        boolean postAmount = bank.releaseHold(card.number, holdNumber);
 
         if (postAmount) {
-            boolean successful = bank.postTransaction(card.getNumber(), holdNumber, amount);
+            boolean successful = bank.postTransaction(card.number, holdNumber, amount);
 
             if (successful) {
-                System.out.println("Remaining balance: " + (Add_item.totalPrice - amount));
+                System.out.println("Remaining balance: " + (session.getTotalPrice() - amount));
             }
         }
 		
 	}
     
     
-    public static void PayByCreditTap(CardTapData card, CardIssuer bank) {
-        double amountDue = Add_item.totalPrice;
-        
+    public static void PayByCreditTap(Card card, CardIssuer bank) throws IOException {
+        double amountDue = session.getTotalPrice();
+        session.cardReader.tap(card);
         sendMessage(card, bank, amountDue);
     }
 
-    public static void tapPayment(CardTapData card) {
+    public static void tapPayment(Card card) throws IOException {
         CardIssuer bank = selectCardType();
         PayByCreditTap(card, bank);
     }
@@ -172,7 +175,6 @@ public class PayWithCredit {
     
     
     public static void sendMessage(CardInsertData card, CardIssuer bank, double amount) {
-
             bank.unblock(card.getNumber());
             long holdNumber = bank.authorizeHold(card.getNumber(), amount);
             boolean postAmount = bank.releaseHold(card.getNumber(), holdNumber);
@@ -181,30 +183,30 @@ public class PayWithCredit {
                 boolean successful = bank.postTransaction(card.getNumber(), holdNumber, amount);
 
                 if (successful) {
-                    System.out.println("Remaining balance: " + (Add_item.totalPrice - amount));
+                    System.out.println("Remaining balance: " + (session.getTotalPrice() - amount));
                 }
             }
-        
+            session.cardReader.remove();
 		
 	}
     
-    public static void PayByCreditInsert(CardInsertData card, CardIssuer bank) {
-    	 double amountDue = Add_item.totalPrice;
+    public static void PayByCreditInsert(Card card, CardIssuer bank) throws IOException {
+    	 double amountDue = session.getTotalPrice();
     	 System.out.println("please enter your PIN");
          Scanner pinScanner = new Scanner(System.in);
          String userPin = pinScanner.next();
-         if(verifyCardHolder(userPin, card)) {
-        	 sendMessage(card, bank, amountDue);
-         }
-         else {
-        	 System.out.print("Entered Pin is wrong");
-         }
-
+         session.cardReader.insert(card, userPin);
+         sendMessage((CardInsertData) session.cardReader.insert(card, userPin),bank,amountDue);
 	}
 
 
-	public static void insertPayment(CardInsertData card) {
+	public static void insertPayment(Card card) throws IOException {
         CardIssuer bank = selectCardType();
         PayByCreditInsert(card, bank);
     }
+
+	
+    
+    
+    
 }
