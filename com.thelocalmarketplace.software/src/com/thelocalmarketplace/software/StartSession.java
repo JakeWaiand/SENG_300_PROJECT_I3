@@ -6,7 +6,9 @@ import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Currency;
+import java.util.GregorianCalendar;
 import java.io.BufferedReader;
 
 import com.jjjwelectronics.EmptyDevice;
@@ -14,6 +16,7 @@ import com.jjjwelectronics.Mass;
 import com.jjjwelectronics.Numeral;
 import com.jjjwelectronics.OverloadedDevice;
 import com.jjjwelectronics.card.AbstractCardReader;
+import com.jjjwelectronics.card.Card;
 import com.jjjwelectronics.scale.*;
 import com.jjjwelectronics.scanner.Barcode;
 import com.jjjwelectronics.scanner.*;
@@ -31,6 +34,7 @@ import com.thelocalmarketplace.hardware.CoinTray;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationBronze;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationSilver;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationGold;
+import com.thelocalmarketplace.hardware.external.CardIssuer;
 import com.thelocalmarketplace.hardware.external.ProductDatabases;
 
 /*
@@ -102,6 +106,25 @@ public class StartSession {
 	
 	
 	public StartSession(AbstractSelfCheckoutStation input_station) throws OverloadedDevice, EmptyDevice {
+
+	
+	
+	Calendar calendar = new GregorianCalendar(2027,2,31);
+	
+	CardIssuer bank1 = new CardIssuer("CIBC",5);
+	CardIssuer bank2 = new CardIssuer("RBC",7);
+	CardIssuer bank3 = new CardIssuer("TD",9);
+
+
+	Card card1 = new Card("Mastercard" , "1234123412341234", "Arthur Morgan", "420", "1234", true, true);
+	Card card2 = new Card("Visa" , "4321432143214321", "Mr Krabs", "999", "4321", true, true);
+	Card card3 = new Card("American Express" , "4312431243124312", "Kratos", "666", "1001", false, true);
+
+
+	Card mCard1 = new Card("Member" , "4321432143214321", "Dexter", "798", null, true, false);
+	Card mCard2 = new Card("Member" , "1243124312431243", "Alice", "876", null, false, false);
+	Card mCard3 = new Card("Member" , "1243124312431243", "Peter Griffin", "942", null, false, false);
+	
 		setStation(input_station);
 		setScale((AbstractElectronicScale)station.getBaggingArea());
 		cardReader = (AbstractCardReader)station.getCardReader();
@@ -149,6 +172,11 @@ public class StartSession {
 		 */
 		//displaySplashScreen();
 		//listenForInput();
+		
+		
+		bank1.addCardData("1234123412341234", "Arthur Morgan", calendar, "420", 10000.0);
+		bank2.addCardData("4321432143214321", "Mr Krabs", calendar, "999", 25000.0);
+		bank3.addCardData("4312431243124312", "Kratos", calendar, "666", 94550.0);
 		
 		
 		input_station.configureBanknoteDenominations(banknoteDenominations);
