@@ -19,11 +19,17 @@ Yasna Naseri  30182402
 Muhammad Niazi 30177775
 Yasir Hussain 30195085
 Almik biju 30170902 
+
+Dongwen Tian 30181813
 */
 
 public class EScaleListenerImplement implements ElectronicScaleListener {
-
-	
+	private StartSession session;
+	private boolean PLUItemIncoming;
+	public EScaleListenerImplement(StartSession session) {
+		this.session = session;
+		setPLUItemIncoming(false);
+	}
 	@Override
 	public void aDeviceHasBeenEnabled(IDevice<? extends IDeviceListener> device) {
 		// TODO Auto-generated method stub
@@ -52,26 +58,45 @@ public class EScaleListenerImplement implements ElectronicScaleListener {
 	public void theMassOnTheScaleHasChanged(IElectronicScale scale, Mass mass) {
 		// TODO Auto-generated method stub
 		// something like massChanged that must be defined somewhere.
-		try {
-			WeightDiscrepancy.evaluate();
-		} catch (OverloadedDevice e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if (scale == session.getScale()) {
+			try {
+				session.getWD().evaluate();
+			} catch (OverloadedDevice e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		else if (scale == session.getScanScale()) {
+			if(PLUItemIncoming) {
+				session.getItemControl().addItemPLU(mass);
+				setPLUItemIncoming(false);
+			}
+			else {
+				session.getItemControl().setMass(mass);
+				
+			}
 		}	
+		
 		
 	}
 
 	@Override
 	public void theMassOnTheScaleHasExceededItsLimit(IElectronicScale scale) {
-		WeightDiscrepancy.exceedWeightEvaluate();
+		session.getWD().exceedWeightEvaluate();
 		
 		
 	}
 
 	@Override
 	public void theMassOnTheScaleNoLongerExceedsItsLimit(IElectronicScale scale) {
-		WeightDiscrepancy.weightEcxcess = false;
+		session.getWD().setWeightExcess(false);
 	
+	}
+	public boolean isPLUItemIncoming() {
+		return PLUItemIncoming;
+	}
+	public void setPLUItemIncoming(boolean pLUItemIncomming) {
+		PLUItemIncoming = pLUItemIncomming;
 	}
 
 }

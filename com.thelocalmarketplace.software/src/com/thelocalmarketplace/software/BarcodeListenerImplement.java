@@ -1,4 +1,4 @@
-package com.thelocalmarketplace;
+package com.thelocalmarketplace.software;
 
 import com.jjjwelectronics.*;
 import com.jjjwelectronics.IDeviceListener;
@@ -7,7 +7,6 @@ import com.jjjwelectronics.scanner.BarcodeScannerListener;
 import com.jjjwelectronics.scanner.IBarcodeScanner;
 import com.thelocalmarketplace.hardware.BarcodedProduct;
 import com.thelocalmarketplace.hardware.external.ProductDatabases;
-import com.thelocalmarketplace.Add_item;
 
 /*
 Kimih Yan 30160567
@@ -21,8 +20,16 @@ Yasna Naseri  30182402
 Muhammad Niazi 30177775
 Yasir Hussain 30195085
 Almik biju 30170902 
+
+Dongwen Tian 30181813
 */
 public class BarcodeListenerImplement implements BarcodeScannerListener {
+	private StartSession session;
+	
+	public BarcodeListenerImplement(StartSession session) {
+		this.session = session;
+		
+	}
 
 	@Override
 	public void aDeviceHasBeenEnabled(IDevice<? extends IDeviceListener> device) {
@@ -55,10 +62,9 @@ public class BarcodeListenerImplement implements BarcodeScannerListener {
 	public void aBarcodeHasBeenScanned(IBarcodeScanner barcodeScanner, Barcode barcode) {
 		// TODO Auto-generated method stub
 		
+		session.getItemControl().addItemScanning(barcode, barcodeScanner);
 		
-		Add_item.itemGotScanned(barcode, barcodeScanner);
 		
-		
-	}
+	}	
 
 }
