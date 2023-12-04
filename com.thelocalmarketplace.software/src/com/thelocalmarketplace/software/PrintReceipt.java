@@ -9,7 +9,11 @@ import com.jjjwelectronics.OverloadedDevice;
 import com.jjjwelectronics.printer.ReceiptPrinterListener;
 
 
+
 /*
+=======
+/* USES ITERATION 2 CODE FROM GROUP 21
+
 Kimih Yan 30160567
 Kenny Zeng 30151985 
 Daniel Adebisi 30179418
@@ -22,12 +26,18 @@ Muhammad Niazi 30177775
 Yasir Hussain 30195085
 Almik biju 30170902 
 
+
 Dongwen Tian 30181813
+=======
+
 */
 
 
 
 public class PrintReceipt implements ReceiptPrinterListener{
+
+  //rewrite some of this
+  
 	private ArrayList<String> itemlist;
 	private ArrayList<Long> priceList;
 	private StartSession session;
@@ -39,6 +49,11 @@ public class PrintReceipt implements ReceiptPrinterListener{
 		String record = new String();
 		record = "";
 	}	
+	
+	private void makeReceipt() {
+		
+	}
+
 	
 	/**
 	 * Announces that the printer is out of paper.

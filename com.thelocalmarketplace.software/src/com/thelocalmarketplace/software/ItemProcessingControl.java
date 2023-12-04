@@ -41,8 +41,8 @@ Yasna Naseri  30182402
 Muhammad Niazi 30177775
 Yasir Hussain 30195085
 Almik biju 30170902
-
 Dongwen Tian 30181813
+Roko Condic 30185671
 */
 
 public class ItemProcessingControl {
@@ -228,21 +228,19 @@ public class ItemProcessingControl {
    public void addItemTextSearch_mustBeWeighed(String description, Product product) {
 	   addItem(session.getStation(), description, product.getPrice(), SpecialCircumstanceMass);
    }
-   
-   
-   public void removeItem(Barcode barcode) {
+
+   public void removeItem(String description, Mass expectedWeight) {
 		if (remove_item == true) {
 			session.getWD().disableInteractions(session.getStation());
-			BarcodedProduct removedProduct = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcode);
-			if (session.getPickedItems().contains(removedProduct.getDescription())) {
-				int index = session.getPickedItems().indexOf(removedProduct.getDescription());
+			if (session.getPickedItems().contains(description)) {
+				int index = session.getPickedItems().indexOf(description);
 				session.setTotalPrice(session.getTotalPrice() - session.getPriceList().get(index));
 				session.getPickedItems().remove(index);
 				session.getPriceList().remove(index);
-				Mass weight = new Mass(removedProduct.getExpectedWeight());
+				Mass weight = expectedWeight;
 				MassDifference difference = session.getExpectedWeight().difference(weight);
-				session.setExpectedWeight(difference.abs()); //updates expectedWeight
-				System.out.println("Item removed: " + removedProduct.getDescription());
+				session.setExpectedWeight(difference.abs()); // updates expectedWeight
+				System.out.println("Item removed: " + description);
 				System.out.println("Total price: " + session.getTotalPrice());
 				System.out.println("please remove the item from bagging.");
 
@@ -253,17 +251,27 @@ public class ItemProcessingControl {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-
 				}
 				session.getWD().disableInteractions(session.getStation());
 			} else {
-				System.out.println("Item not found in the scanned items list.");
+				System.out.println("Item not found in the items list.");
 			}
 		}
 	}
 
-   
+	public void removeItemScanned(Barcode barcode) {
+		if (remove_item == true) {
+			BarcodedProduct removedProduct = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcode);
+			removeItem(removedProduct.getDescription(), new Mass(removedProduct.getExpectedWeight()));
+		}
+	}
 
+	public void removeItemPLU(PriceLookUpCode code) {
+		if (remove_item == true) {
+			PLUCodedProduct removedProduct = ProductDatabases.PLU_PRODUCT_DATABASE.get(code);
+			removeItem(removedProduct.getDescription(),
+					session.getWeightList().get(session.getPickedItems().indexOf(removedProduct.getDescription())));
+		}
+	}
 
 }
-   

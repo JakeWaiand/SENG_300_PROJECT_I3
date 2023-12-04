@@ -65,18 +65,24 @@ public class PayWithDebit {
         if (signature.equals(card.getCardholder())) {
             identity = true;
         }
+        else {
+        	identity = false;
+        }
     }
 
     public void sendMessage(CardSwipeData card, CardIssuer bank, double amount) {
         if (identity) {
             boolean cardRead = false;
-
+            
+            /*
             while (!cardRead) {
                 System.out.println("please swipe again");
                 cardRead = bank.block(card.getNumber());
             }
+            */
 
-            bank.unblock(card.getNumber());
+            //bank.unblock(card.getNumber());
+            
             long holdNumber = bank.authorizeHold(card.getNumber(), amount);
             boolean postAmount = bank.releaseHold(card.getNumber(), holdNumber);
 
@@ -86,6 +92,8 @@ public class PayWithDebit {
                 if (successful) {
                     System.out.println("Remaining balance: " + (session.getTotalPrice() - amount));
                 }
+            } else {
+            	identity = false;
             }
         }
     }
