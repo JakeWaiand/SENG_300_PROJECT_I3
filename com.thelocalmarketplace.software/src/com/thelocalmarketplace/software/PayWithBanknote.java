@@ -99,7 +99,6 @@ public class PayWithBanknote implements BanknoteValidatorObserver {
     }
 
     private Banknote selectBanknoteForChange1(BigDecimal changeAmount) {
-    	private Banknote selectBanknoteForChange(BigDecimal changeAmount) {
     	    
     	    BigDecimal[] denominations = new BigDecimal[]{new BigDecimal("50"), new BigDecimal("20"), new BigDecimal("10"), new BigDecimal("5"), new BigDecimal("1")};
 
@@ -111,34 +110,34 @@ public class PayWithBanknote implements BanknoteValidatorObserver {
     	    return null; // No suitable denomination found
  	   
     	}
-    }
+   
 
     @Override
     public void enabled(IComponent<? extends IComponentObserver> component) {
-        // Implementation for enabled component
+        System.out.println(component.getClass().getSimpleName() + " is enabled.");
     }
 
     @Override
     public void disabled(IComponent<? extends IComponentObserver> component) {
-        // Implementation for disabled component
+        System.out.println(component.getClass().getSimpleName() + " is disabled.");
     }
 
     @Override
     public void turnedOn(IComponent<? extends IComponentObserver> component) {
-        // Implementation for turned on component
+        System.out.println(component.getClass().getSimpleName() + " is turned on.");
     }
 
     @Override
     public void turnedOff(IComponent<? extends IComponentObserver> component) {
-        // Implementation for turned off component
+        System.out.println(component.getClass().getSimpleName() + " is turned off.");
     }
 
-    // Custom exception classes
     class InvalidCurrencyException extends Exception {
         public InvalidCurrencyException(String message) {
             super(message);
         }
     }
+
 
     class ChangeDispenseException extends Exception {
         public ChangeDispenseException(String message, Throwable cause) {
