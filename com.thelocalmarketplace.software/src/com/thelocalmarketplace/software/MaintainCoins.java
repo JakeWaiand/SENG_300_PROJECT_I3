@@ -1,27 +1,15 @@
 package com.thelocalmarketplace.software;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.tdc.CashOverloadException;
 import com.tdc.coin.Coin;
 
 import com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation;
-import com.thelocalmarketplace.hardware.SelfCheckoutStationBronze;
-import com.thelocalmarketplace.hardware.SelfCheckoutStationSilver;
 
 import ca.ucalgary.seng300.simulation.InvalidStateSimulationException;
-import ca.ucalgary.seng300.simulation.SimulationException;
-
-import com.thelocalmarketplace.hardware.SelfCheckoutStationGold;
 
 public class MaintainCoins {
-	
-	private final int GOLD = 2;
-	private final int SILVER = 1;
-	private final int BRONZE = 0;
-	
-	private int stationGrade; //idk if i even need this, coin storage seems to be the same regardless of station type
 	
 	private AbstractSelfCheckoutStation station;
 	
@@ -33,14 +21,6 @@ public class MaintainCoins {
 	 */
 	public MaintainCoins(AbstractSelfCheckoutStation usedStation) {
 		station = usedStation;
-		
-		if (usedStation instanceof SelfCheckoutStationBronze) {
-			stationGrade = BRONZE;
-		} else if (usedStation instanceof SelfCheckoutStationSilver) {
-			stationGrade = SILVER;
-		} else if (usedStation instanceof SelfCheckoutStationGold) {
-			stationGrade = GOLD;
-		}
 	}
 
 	/**
@@ -80,6 +60,7 @@ public class MaintainCoins {
 			
 			for (int i = 0; i < returnQuantity; i++) {
 				station.getCoinStorage().load(removedCoins.get(removedCoins.size() - 1));
+				removedCoins.remove(removedCoins.size() - 1);
 			}
 		} else if (quantity > station.getCoinStorage().getCoinCount()) {
 			throw new InvalidStateSimulationException("Cannot take more coins out than are in the storage unit.");
