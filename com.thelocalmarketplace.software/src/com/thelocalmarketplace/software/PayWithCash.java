@@ -123,7 +123,7 @@ public class PayWithCash implements BanknoteInsertionSlotObserver,CoinSlotObserv
 		
 		// I am not sure where do we get the Change money. Do we take it from the storage or is there a separate number of banknotes and coins specifically for change
 		
-		
+		/*
 		if (totalAmountDue < 0) {
 		    double change = -1 * totalAmountDue;
 
@@ -140,6 +140,7 @@ public class PayWithCash implements BanknoteInsertionSlotObserver,CoinSlotObserv
 		        }
 		    }
 		}
+		*/
 		
 	}
 		

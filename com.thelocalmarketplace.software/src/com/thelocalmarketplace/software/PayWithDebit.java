@@ -124,7 +124,7 @@ public class PayWithDebit {
         
         session.getStation().getCardReader().swipe(card);
         
-        sendMessage(card, bank, amountDue);
+        sendMessage(card.swipe(), bank, amountDue);
     }
 
     public static void swipePayment(Card card) throws IOException {

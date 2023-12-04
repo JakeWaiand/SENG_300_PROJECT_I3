@@ -24,6 +24,7 @@ import com.thelocalmarketplace.software.PayWithDebit;
 import com.thelocalmarketplace.software.StartSession;
 
 import ca.ucalgary.seng300.simulation.InvalidArgumentSimulationException;
+import powerutility.PowerGrid;
 
 /*
 Kimih Yan 30160567
@@ -59,7 +60,10 @@ public class PayWithDebitTest {
 
     @Before
     public void setUp() {
+    	
     	testStation = new SelfCheckoutStationGold();
+    	testStation.plugIn(PowerGrid.instance());
+    	testStation.turnOn();
     	try {
 			testSession = new StartSession(testStation);
 		} catch (OverloadedDevice | EmptyDevice e) {
@@ -92,7 +96,7 @@ public class PayWithDebitTest {
 			cardSwipeData = visaCard.swipe();
 			testSession.setTotalPrice(10);
 			System.setIn(new ByteArrayInputStream("Card Holder".getBytes()));
-	        paymentProcessor.payByDebit(cardSwipeData, bank);
+	        paymentProcessor.PayByDebitSwipe(visaCard, bank);
 		} catch (IOException e) {
 			fail();
 		}
@@ -106,7 +110,7 @@ public class PayWithDebitTest {
     	try {
     		cardSwipeData = visaCard.swipe();
             System.setIn(new ByteArrayInputStream("Invalid Signature".getBytes()));
-            paymentProcessor.payByDebit(cardSwipeData, bank);
+            paymentProcessor.PayByDebitSwipe(visaCard, bank);
     	} catch (IOException e) {
     		fail();
     	}
@@ -124,7 +128,7 @@ public class PayWithDebitTest {
     		
     		cardSwipeData = mastercard.swipe();
             System.setIn(new ByteArrayInputStream("Card Holder".getBytes()));
-            paymentProcessor.payByDebit(cardSwipeData, bank);
+            paymentProcessor.PayByDebitSwipe(visaCard, bank);
     	} catch (IOException e) {
     		fail();
     	}
@@ -141,7 +145,7 @@ public class PayWithDebitTest {
     		bank.addCardData("3456789012345678", "Card Owner", calendar2, "789", 1000);
 	        CardSwipeData cardSwipeData = americanExpressCard.swipe();
 	        System.setIn(new ByteArrayInputStream("Card Owner".getBytes()));
-	        paymentProcessor.payByDebit(cardSwipeData, bank);
+	        paymentProcessor.PayByDebitSwipe(visaCard, bank);
     	} catch (IOException e) {
     		fail();
     	} catch (InvalidArgumentSimulationException e) {
