@@ -9,6 +9,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 
@@ -18,7 +19,12 @@ public class Main {
     
 
 
-        
+        // panel for the the self checkout
+        JPanel panel = new JPanel();
+        panel.setBackground(Color.BLACK);
+        panel.setBounds(0,0,700,200);
+// Label for the selfCheck out panel 
+
         JLabel label = new JLabel();
         label.setText("Self CheckOut System");
         
@@ -27,6 +33,9 @@ public class Main {
 
         label.setForeground(Color.yellow);
         label.setFont(new Font("Times New Roman", Font.BOLD, 34));
+        
+        label.setBounds(0, 0, 0, 0);
+
         
         // label.setBounds(0, 0, 0, 0);
 
