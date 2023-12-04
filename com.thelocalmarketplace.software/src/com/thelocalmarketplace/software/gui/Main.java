@@ -2,16 +2,18 @@ package com.thelocalmarketplace.software.gui;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
 
 public class Main {
-    public static void main(String[] args){
+    public void main(String[] args){
 
     
 
@@ -35,12 +37,31 @@ public class Main {
         // start.setHorizontalAlignment(SwingConstants.CENTER);
 
 
-        JButton goToAddItem = new JButton("Start Session");
-        goToAddItem.addMouseListener(new MouseAdapter() {
-            public void mouseClick(MouseEvent e){
-                
+        JButton goToMainScreen = new JButton("Start");
+        goToMainScreen.setBounds(10, 10, 100, 30); // Set the button bounds as needed
+
+        goToMainScreen.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                loadMainGUI();
             }
         });
+
+        add(goToMainScreen);
+    }
+
+    private void loadMainGUI() {
+        // Code to load the main GUI directly within the panel
+        // For example:
+        JFrame mainFrame = new MainFrame(); // Replace MainFrame with your actual main frame class
+        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        mainFrame.setSize(800, 600);
+        mainFrame.setLocationRelativeTo(null);
+        mainFrame.setVisible(true);
+    }
+
+    // Other methods or variables can be added as needed
+}
 
 
 
