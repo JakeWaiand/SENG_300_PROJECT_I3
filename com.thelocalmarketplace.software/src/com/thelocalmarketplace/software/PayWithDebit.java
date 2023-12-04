@@ -122,12 +122,12 @@ public class PayWithDebit {
 
         verifyCardHolder(userSignature, card);
         
-        session.cardReader.swipe(card);
+        session.getStation().getCardReader().swipe(card);
         
         sendMessage(card, bank, amountDue);
     }
 
-    public static void swipePayment(Card card) {
+    public static void swipePayment(Card card) throws IOException {
         CardIssuer bank;
 		
 			bank = selectCardType();
@@ -159,7 +159,7 @@ public class PayWithDebit {
     
     public static void PayByDebitTap(Card card, CardIssuer bank) throws IOException {
         double amountDue = session.getTotalPrice();
-        session.cardReader.tap(card);
+        session.getStation().getCardReader().tap(card);
         sendMessage(card, bank, amountDue);
     }
 
@@ -186,7 +186,7 @@ public class PayWithDebit {
                     System.out.println("Remaining balance: " + (session.getTotalPrice() - amount));
                 }
             }
-            session.cardReader.remove();
+            session.getStation().getCardReader().remove();
 		
 	}
     
@@ -195,8 +195,8 @@ public class PayWithDebit {
     	 System.out.println("please enter your PIN");
          Scanner pinScanner = new Scanner(System.in);
          String userPin = pinScanner.next();
-         session.cardReader.insert(card, userPin);
-         sendMessage((CardInsertData) session.cardReader.insert(card, userPin),bank,amountDue);
+         session.getStation().getCardReader().insert(card, userPin);
+         sendMessage((CardInsertData) session.getStation().getCardReader().insert(card, userPin),bank,amountDue);
 	}
 
 

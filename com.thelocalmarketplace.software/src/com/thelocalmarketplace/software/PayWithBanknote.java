@@ -87,7 +87,13 @@ public class PayWithBanknote implements BanknoteValidatorObserver {
             while (changeAmount.compareTo(BigDecimal.ZERO) > 0) {
                 Banknote banknoteToDispense = selectBanknoteForChange1(changeAmount);
                 if (banknoteToDispense != null) {
-                    dispenser.emit(banknoteToDispense); // Emit the banknote
+                	// the emit() method for abstract banknote dispenser does not take any arguments
+                	// the type of banknote to dispense is instead determined by which banknoteDispenser the method is called from,
+                	// since different dispensers store different denominations of banknotes
+                	// Dongwen
+                	
+                    dispenser.emit(banknoteToDispense); // Emit the banknote (Error here)
+                	
                     changeAmount = changeAmount.subtract(banknoteToDispense.getDenomination());
                 } else {
                     throw new InsufficientChangeException("Unable to dispense the required change.");
