@@ -19,6 +19,8 @@ Yasna Naseri  30182402
 Muhammad Niazi 30177775
 Yasir Hussain 30195085
 Almik biju 30170902 
+
+Dongwen Tian 30181813
 */
 
 public class CardlistenerImplement implements CardReaderListener {
@@ -60,7 +62,25 @@ public class CardlistenerImplement implements CardReaderListener {
 	public void theDataFromACardHasBeenRead(CardData data) {
 		readData = true;
 		CardSwipeData this_data = (CardSwipeData) data;
-		PayWithDebit.payment_in_process(this_data);
+		//PayWithDebit.payment_in_process(this_data);
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void aCardHasBeenInserted() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void theCardHasBeenRemoved() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void aCardHasBeenTapped() {
 		// TODO Auto-generated method stub
 		
 	}
