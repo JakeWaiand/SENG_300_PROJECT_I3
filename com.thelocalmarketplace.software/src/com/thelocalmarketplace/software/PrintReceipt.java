@@ -4,10 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 import com.jjjwelectronics.EmptyDevice;
-import com.jjjwelectronics.IDevice;
-import com.jjjwelectronics.IDeviceListener;
 import com.jjjwelectronics.OverloadedDevice;
-import com.jjjwelectronics.printer.ReceiptPrinterListener;
 
 /*
  * Dongwen Tian 30181813
@@ -56,7 +53,7 @@ Dongwen Tian 30181813
 
 */
 
-public class PrintReceipt implements ReceiptPrinterListener{
+public class PrintReceipt {
 
 	private ArrayList<String> itemList;
 	private ArrayList<Long> priceList;
@@ -131,79 +128,6 @@ public class PrintReceipt implements ReceiptPrinterListener{
 		receipt += "\nTOTAL: " + totalPrice;
 		
 		return receipt;
-	}
-
-	
-	/**
-	 * Announces that the printer is out of paper.
-	 */
-	@Override
-	public void thePrinterIsOutOfPaper() {
-		System.out.println("The printer is out of paper");
-	}
-
-	/**
-	 * Announces that the printer is out of ink.
-	 */
-	@Override
-	public void thePrinterIsOutOfInk() {
-		System.out.println("The printer is out of ink");
-	}
-
-	/**
-	 * Announces that the printer is low on ink.
-	 */
-	@Override
-	public void thePrinterHasLowInk() {
-		System.out.println("The printer is low on ink");
-	}
-
-	/**
-	 * Announces that the printer is low on paper.
-	 */
-	@Override
-	public void thePrinterHasLowPaper() {
-		System.out.println("The printer is low on paper");
-	}
-
-	/**
-	 * Announces that paper has been added to the printer.
-	 */
-	@Override
-	public void paperHasBeenAddedToThePrinter() {
-		System.out.println("Paper has been added to the printer");
-	}
-
-	/**
-	 * Announces that ink has been added to the printer.
-	 */
-	@Override
-	public void inkHasBeenAddedToThePrinter() {
-		System.out.println("Ink has been added to the printer");
-	}
-
-	@Override
-	public void aDeviceHasBeenEnabled(IDevice<? extends IDeviceListener> device) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void aDeviceHasBeenDisabled(IDevice<? extends IDeviceListener> device) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void aDeviceHasBeenTurnedOn(IDevice<? extends IDeviceListener> device) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void aDeviceHasBeenTurnedOff(IDevice<? extends IDeviceListener> device) {
-		// TODO Auto-generated method stub
-		
 	}
 }
 
