@@ -17,9 +17,4 @@ public final class BanknoteDispenserBronze extends AbstractBanknoteDispenser {
 	public BanknoteDispenserBronze() {
 		super(MAX_CAPACITY);
 	}
-
-	public void emit(Banknote banknoteToDispense) {
-		// TODO Auto-generated method stub
-		
-	}
 }
