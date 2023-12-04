@@ -30,27 +30,38 @@ public class MainFrame extends JFrame {
         JButton addItemButton = new JButton("Add Item");
         JButton completeTransactionButton = new JButton("Complete Transaction");
 
-        startSessionButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Add logic for starting a session
-                startSessionButton.addActionListener(e -> loadMainGUI());
-            }
-        });
+        // startSessionButton.addActionListener(new ActionListener() {
+        //     @Override
+        //     public void actionPerformed(ActionEvent e) {
+        //         // Simulate starting a session
+        //         JOptionPane.showMessageDialog(MainFrame.this, "Session started");
+        //     }
+        // });
+
+        startSessionButton.addActionListener(e -> loadMainGUI());
 
         addItemButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Add logic for adding items
-                System.out.println("Item added");
+                // Simulate adding items
+                String itemName = JOptionPane.showInputDialog(MainFrame.this, "Enter item name:");
+                if (itemName != null && !itemName.isEmpty()) {
+                    JOptionPane.showMessageDialog(MainFrame.this, "Item added: " + itemName);
+                } else {
+                    JOptionPane.showMessageDialog(MainFrame.this, "Invalid item name");
+                }
             }
         });
 
         completeTransactionButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Add logic for completing the transaction
-                System.out.println("Transaction completed");
+                // Simulate completing the transaction
+                int result = JOptionPane.showConfirmDialog(MainFrame.this, "Do you want to complete the transaction?",
+                        "Complete Transaction", JOptionPane.YES_NO_OPTION);
+                if (result == JOptionPane.YES_OPTION) {
+                    JOptionPane.showMessageDialog(MainFrame.this, "Transaction completed");
+                }
             }
         });
 
@@ -74,10 +85,10 @@ public class MainFrame extends JFrame {
     }
 
     private static void loadMainGUI() {
-        JFrame mainFrame = new MainFrame(); // Replace MainFrame with your actual main frame class
-        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        mainFrame.setSize(800, 600);
-        mainFrame.setLocationRelativeTo(null);
-        mainFrame.setVisible(true);
+        JFrame addFrame = new JFrame(); 
+        addFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        addFrame.setSize(800, 600);
+        addFrame.setLocationRelativeTo(null);
+        addFrame.setVisible(true);
     }
 }
