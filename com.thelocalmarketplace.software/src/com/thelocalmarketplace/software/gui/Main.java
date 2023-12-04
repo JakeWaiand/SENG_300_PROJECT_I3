@@ -40,7 +40,7 @@ public class Main {
     }
 
     private static void loadMainGUI() {
-        JFrame mainFrame = new MainFrame(); // Replace MainFrame with your actual main frame class
+        JFrame mainFrame = new MyFrame(); 
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.setSize(800, 600);
         mainFrame.setLocationRelativeTo(null);
