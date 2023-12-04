@@ -30,6 +30,8 @@ import com.thelocalmarketplace.hardware.SelfCheckoutStationBronze;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationSilver;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationGold;
 import com.thelocalmarketplace.hardware.external.ProductDatabases;
+import com.thelocalmarketplace.software.gui.MainFrame;
+import com.thelocalmarketplace.software.gui.SessionFrame;
 
 /*
 Kimih Yan 30160567
@@ -47,6 +49,7 @@ Ariba Noman 30111428
 */
 
 public class StartSession {
+<<<<<<< Updated upstream
 	public static AbstractSelfCheckoutStation station;
 	public static String level;
 	public static AbstractElectronicScale scale;
@@ -58,6 +61,39 @@ public class StartSession {
 	public static BanknoteInsertionSlot cashSlot;
 	public static PayWithCash cashListener; 
 	public static boolean paymentSuccessful = false;
+=======
+	private AbstractSelfCheckoutStation station;
+	private AbstractElectronicScale scale;
+	private AbstractCardReader cardReader;
+	private IBarcodeScanner handHeldScanner;
+	private IBarcodeScanner mainScanner;
+	private boolean isActive;
+	private BanknoteInsertionSlot cashSlot;
+	
+	private PayWithCash cashListener; 
+	private boolean paymentSuccessful = false;
+	private ItemProcessingControl itemControl;
+	private WeightDiscrepancy WD;
+	private PayWithDebit pay_debit;
+	private PayWithCredit pay_Credit;
+	private PayWithCash pay_Cash;
+	private PrintReceipt printReceipt;
+	
+	private EScaleListenerImplement scaleListener;
+	private BarcodeListenerImplement barcodeListener;
+	private CardlistenerImplement cardListener;
+	private AbstractElectronicScale scanScale;
+	private ArrayList<String> pickedItems; //this can be used for print receipt
+	private ArrayList<Long> priceList; //this can be used for print receipt
+	private ArrayList<Mass> weightList;
+	private long totalPrice; //this can be used for print receipt
+	private Mass expectedWeight = new Mass(0);
+	private AttendantControl attendantControl;
+	private MainFrame mainFrame;
+	private SessionFrame sessionFrame;
+	
+
+>>>>>>> Stashed changes
 	
 	
 	
@@ -78,6 +114,7 @@ public class StartSession {
 	public static CoinValidator coinValidator = new CoinValidator(cad,Arrays.asList(coinDenominations));
 	
 	
+<<<<<<< Updated upstream
 	
 	
 	public StartSession(AbstractSelfCheckoutStation input_station) throws OverloadedDevice {
@@ -104,6 +141,38 @@ public class StartSession {
 		BarcodeListenerImplement barcodeListener = new BarcodeListenerImplement();
 		CardlistenerImplement cardListener = new CardlistenerImplement();
 		scale.register(scaleListener);
+=======
+	public StartSession(AbstractSelfCheckoutStation input_station) throws OverloadedDevice, EmptyDevice {
+		setStation(input_station);
+		setScale((AbstractElectronicScale)station.getBaggingArea());
+		cardReader = (AbstractCardReader)station.getCardReader();
+		setHandHeldScanner(station.getHandheldScanner());
+		setMainScanner(station.getMainScanner());
+		setScanScale((AbstractElectronicScale) station.getScanningArea());
+		
+		/* 
+		 * Turn on should not be called in StartSession, the selfCheckoutStation being turned on
+		 * should be necessary for StartSession to be called in the first place.
+		 * Dongwen
+		*/
+		//station.turnOn();
+		mainFrame = new MainFrame(this);
+		sessionFrame = new SessionFrame(this);
+		setWD(new WeightDiscrepancy(this));
+		setItemControl(new ItemProcessingControl(this));
+		pay_debit = new PayWithDebit(this);
+		pay_Credit = new PayWithCredit(this);
+		printReceipt = new PrintReceipt(this);
+		
+		setScaleListener(new EScaleListenerImplement(this));
+		barcodeListener = new BarcodeListenerImplement(this);
+		cardListener = new CardlistenerImplement();
+		
+		PayWithCash.setSession(this);
+		cashSlot = input_station.getBanknoteInput();
+
+		getScale().register(getScaleListener());
+>>>>>>> Stashed changes
 		cardReader.register(cardListener);
 		handHeldScanner.register(barcodeListener);
 		mainScanner.register(barcodeListener);
@@ -169,7 +238,19 @@ public class StartSession {
 	
 	
 
-	
+	public void setSessionFrame(SessionFrame frame){
+		this.sessionFrame = frame;
+	}
+	public SessionFrame getSessionFrame() {
+		return sessionFrame;
+	}
+
+	public void setMainFrame(MainFrame frame){
+		this.mainFrame = frame;
+	}
+	public MainFrame getMainFrame() {
+		return mainFrame;
+	}
 	
 	
 }

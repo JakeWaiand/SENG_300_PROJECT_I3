@@ -103,10 +103,8 @@ public class ItemProcessingControl {
 		session.getPickedItems().add(description);
 		session.getPriceList().add(price);
 		session.getWeightList().add(weight);
-		
-		System.out.print("total price: ");
-		System.out.println(session.getTotalPrice());
-		System.out.println("these are the items scanned:");
+		session.getSessionFrame().getTotalPriceLabel().setText("Total Price: $" + session.getTotalPrice());
+		session.getSessionFrame().getPickedItemsModel().addElement(description);
 		for (int i = 0; i <= session.getPickedItems().size(); i++)
 			System.out.println(session.getPickedItems().get(i));
 		System.out.println("please put the item in the bagging area");
