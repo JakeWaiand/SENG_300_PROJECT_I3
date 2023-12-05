@@ -1,3 +1,5 @@
+package com.thelocalmarketplace.software;
+
 public class MaintainCoins {
     private PredictiveAnalysis predictiveAnalysis;
 
