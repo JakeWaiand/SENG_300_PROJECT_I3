@@ -1,4 +1,4 @@
-package com.thelocalmarketplace.software.GUI;
+package com.thelocalmarketplace.software.gui;
 
 import java.awt.Color;
 import java.awt.Font;

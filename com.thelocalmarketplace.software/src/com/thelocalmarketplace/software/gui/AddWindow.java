@@ -1,5 +1,5 @@
 
-package com.thelocalmarketplace.software.GUI;
+package com.thelocalmarketplace.software.gui;
 
 import javax.swing.*;
 

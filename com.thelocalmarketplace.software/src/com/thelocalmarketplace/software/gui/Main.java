@@ -1,6 +1,7 @@
-package com.thelocalmarketplace.software.GUI;
+package com.thelocalmarketplace.software.gui;
 import javax.swing.*;
 
+import com.jjjwelectronics.EmptyDevice;
 import com.jjjwelectronics.OverloadedDevice;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationBronze;
 import com.thelocalmarketplace.software.StartSession;
@@ -9,7 +10,7 @@ import java.awt.*;
 
 public class Main {
 
-    public static void main(String[] args) throws OverloadedDevice {
+    public static void main(String[] args) throws OverloadedDevice, EmptyDevice {
         // Create and set up the main window
     	
         JFrame frame = new JFrame("Self Checkout Station");
