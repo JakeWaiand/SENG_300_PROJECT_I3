@@ -38,8 +38,11 @@ public class AddWindow extends JPanel {
                 } else if ("Purchase Bags".equals(text)) {
                     frame.dispose(); // Close the AddWindow
                     PurchaseBagsWindow.open(); // Open the PurchaseBagsWindow
-                }
-                // You can add more else if blocks here for other buttons as needed
+                } else if ("Add Own Bags".equals(text)) {
+                    frame.dispose(); // Close the AddWindow
+                    AddOwnBagsWindow.open(); // Open the AddOwnBagsWindow
+                } 
+                // Add more else if blocks here for other buttons as needed
             });
             buttonsPanel.add(button);
         }
