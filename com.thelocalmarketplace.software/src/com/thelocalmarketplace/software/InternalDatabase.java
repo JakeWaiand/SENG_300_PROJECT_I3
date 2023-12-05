@@ -77,16 +77,4 @@ public class InternalDatabase {
 		
 	}
 	
-	public static void main(String[] args) {
-	// this was for personal testing but i kept it
-		Numeral[] gate = {Numeral.one,Numeral.two, Numeral.three};
-		for (int i = 0;i < gate.length; i++) {
-		System.out.print(gate[i]);}
-		Barcode barcode = new Barcode(gate);
-		System.out.print(barcode);
-		BarcodedProduct product = new BarcodedProduct(barcode, "milk dairyland", 22, 150);
-		ProductDatabases.BARCODED_PRODUCT_DATABASE.put(barcode, product);
-		addData(ProductDatabases.BARCODED_PRODUCT_DATABASE);
-	
-	}
 }
