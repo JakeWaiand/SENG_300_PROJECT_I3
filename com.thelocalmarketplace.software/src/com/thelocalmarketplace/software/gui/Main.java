@@ -4,6 +4,7 @@ import java.awt.*;
 
 public class Main {
 
+
     public static void main(String[] args) {
         // Create and set up the main window
         JFrame frame = new JFrame("Self Checkout Station");
@@ -38,7 +39,7 @@ public class Main {
         gbc.gridwidth = 2;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         frame.add(startButton, gbc);
-
+        
         // Display the window
         frame.setLocationRelativeTo(null); // Center the window
         frame.setVisible(true);

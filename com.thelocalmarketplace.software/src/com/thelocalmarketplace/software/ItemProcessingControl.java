@@ -283,6 +283,18 @@ public class ItemProcessingControl {
 					session.getWeightList().get(session.getPickedItems().indexOf(removedProduct.getDescription())));
 		}
 	}
+    /**
+     * Adds own bags to the transaction.
+     * 
+     * @param numberOfBags the number of bags to add
+     */
+    public static void addOwnBags(int numberOfBags) {
+        long bagPrice = calculateBagPrice(numberOfBags); // Implement this method to calculate the bag price
+        Mass bagWeight = new Mass(0); // Set the bag weight to an appropriate value
+
+        updateScale();
+        updateCostumer("Own Bags", bagPrice, bagWeight);
+    }
 
 }
 
