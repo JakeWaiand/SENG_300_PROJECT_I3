@@ -1,3 +1,6 @@
+package com.thelocalmarketplace.software;
+
+
 public class DataCollector {
 
     private MaintainInk inkMaintainer;
