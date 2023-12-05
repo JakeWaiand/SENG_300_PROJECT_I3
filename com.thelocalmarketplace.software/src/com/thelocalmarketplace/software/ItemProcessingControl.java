@@ -1,3 +1,28 @@
+/*
+ * Dongwen Tian			 30181813
+ *Fardin Rahman Sami             30172916
+ * Kenny Zeng 			 30151985
+ * Tahamina Chowdhury 	         30140920
+ * Sneh Patel 			 30086076
+ * Jake Waiand 			 30179510
+ * Roko Condic 			 30185671
+ * Farouq Arafeh		 30158214
+ * K M Chisty 			 30145123
+ * Mohammad Soomro 		 30130440
+ * Daniel Adebisi 		 30179418
+ * Eyuel Kahsay 		 30181884
+ * Almik Biju 			 30170902
+ * Kourosh Malayeri 	         30174987
+ * Hasan Qasim 			 30164530
+ * Ariba Noman 			 30111428
+ * Kyuyop (Andrew) Park          10046592
+ * Jiaqi Wu 			 30172397
+ * Ludovik Chojnacki 	         30178890
+ * Muhammad Niazi 		 30177775
+ * Firdovsi Aliyev 		 30178471
+ * Ratul Chakraborty	         30194422
+ */
+
 package com.thelocalmarketplace.software;
 
 import java.math.BigDecimal;
@@ -29,21 +54,6 @@ import com.thelocalmarketplace.hardware.external.ProductDatabases;
 
 
 
-/*
-Kimih Yan 30160567
-Kenny Zeng 30151985
-Daniel Adebisi 30179418
-Kourosh Malayeri 30174987
-Tahamina Chowdhury 30140920
-Firdovsi Aliyev 30178471
-Hasan Qasim 30164530
-Yasna Naseri  30182402
-Muhammad Niazi 30177775
-Yasir Hussain 30195085
-Almik biju 30170902
-Dongwen Tian 30181813
-Roko Condic 30185671
-*/
 
 public class ItemProcessingControl {
 	private Mass productsWeight;
@@ -286,4 +296,58 @@ public class ItemProcessingControl {
         updateCostumer("Own Bags", bagPrice, bagWeight);
     }
 
+}
+
+/**
+ * This class deals with what happens when a customer chooses not to put an item
+ * in the bagging area.
+ */
+public class HandleBulkyItem {
+
+    public static void handleNoBaggingRequest(AbstractSelfCheckoutStation station) {
+        if (isSessionActive() && customerSignalsNoBagging()) {
+            blockStation(station);
+            notifyAttendant();
+            approveByAttendant();
+            unblockStation(station);
+        }
+    }
+
+    private boolean isSessionActive() {
+        // Simulate session being active
+        return StartSession.isActive();
+    }
+
+    private static boolean customerSignalsNoBagging() {
+        // Simulate customer signaling not to bag
+        return true;
+    }
+
+    private static void blockStation(AbstractSelfCheckoutStation station) {
+        station.getScanningArea().disable();
+        station.getCardReader().disable();
+        station.getMainScanner().disable();
+        station.getHandheldScanner().disable();
+        station.getBanknoteInput().disable();
+        station.getCoinSlot().disable();
+    }
+
+    private static void notifyAttendant() {
+        System.out.println("System: Requesting Attendant Assistance. Customer avoids bagging.");
+    }
+
+    private static void approveByAttendant() {
+        System.out.println("Attendant: Approval granted. Customer avoids bagging.");
+    }
+
+    private static void unblockStation(AbstractSelfCheckoutStation station) {
+        station.getScanningArea().enable();
+        station.getCardReader().enable();
+        station.getMainScanner().enable();
+        station.getHandheldScanner().enable();
+        station.getBanknoteInput().enable();
+        station.getCoinSlot().enable();
+
+        System.out.println("System: Station unblocked. Customer can continue.");
+    }
 }

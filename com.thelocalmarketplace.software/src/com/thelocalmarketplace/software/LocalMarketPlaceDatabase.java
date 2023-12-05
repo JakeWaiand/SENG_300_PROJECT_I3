@@ -7,6 +7,7 @@ import com.jjjwelectronics.Numeral;
 import com.jjjwelectronics.scanner.Barcode;
 import com.thelocalmarketplace.hardware.BarcodedProduct;
 import com.thelocalmarketplace.hardware.Product;
+import com.thelocalmarketplace.hardware.external.ProductDatabases;
 
 /*
 Kimih Yan 30160567
@@ -20,21 +21,17 @@ Yasna Naseri  30182402
 Muhammad Niazi 30177775
 Yasir Hussain 30195085
 Almik biju 30170902 
-
-Dongwen Tian 30181813
 */
 
 
 public class LocalMarketPlaceDatabase {
 	
 	private static LocalMarketPlaceDatabase instance = null;
-
-	private final Map<Barcode, BarcodedProduct> BARCODED_PRODUCT_DATABASE;
-	private final Map<Product, Integer> INVENTORY;
+	
+	
 
 	private LocalMarketPlaceDatabase() {
-		BARCODED_PRODUCT_DATABASE = new HashMap<>();
-		INVENTORY = new HashMap<>();
+		
 		populateDatabase();
 	}
 	
@@ -75,23 +72,23 @@ public class LocalMarketPlaceDatabase {
 	}
 
 	public void addBarcodedProductToDatabase(BarcodedProduct barcodedProduct) {
-		BARCODED_PRODUCT_DATABASE.put(barcodedProduct.getBarcode(), barcodedProduct);
+		ProductDatabases.BARCODED_PRODUCT_DATABASE.put(barcodedProduct.getBarcode(), barcodedProduct);
 	}
 	
 	public BarcodedProduct getBarcodedProductToDatabase(Barcode barcode) {
-		return BARCODED_PRODUCT_DATABASE.get(barcode);
+		return ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcode);
 	}
 
 	public void addBarcodedProductToInventory(BarcodedProduct barcodedProduct, int amount) {
-		INVENTORY.put(barcodedProduct, amount);
+		ProductDatabases.INVENTORY.put(barcodedProduct, amount);
 	}
 
 	public void removeBarcodedProductFromInventory(BarcodedProduct barcodedProduct, int amountRemoved) {
-		INVENTORY.put(barcodedProduct, INVENTORY.get(barcodedProduct) - amountRemoved);
+		ProductDatabases.INVENTORY.put(barcodedProduct, ProductDatabases.INVENTORY.get(barcodedProduct) - amountRemoved);
 	}
 
 	public int getInventoryOfBarcodedProduct(BarcodedProduct barcodedProduct) {
-		return INVENTORY.get(barcodedProduct);
+		return ProductDatabases.INVENTORY.get(barcodedProduct);
 	}
 
 }

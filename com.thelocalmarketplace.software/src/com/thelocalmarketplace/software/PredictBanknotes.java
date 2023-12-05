@@ -24,24 +24,19 @@
  */
 
 package com.thelocalmarketplace.software;
-public class StationControl {
-    private boolean isEnabled;
 
-    public StationControl() {
-        isEnabled = false; // Stations start as disabled
+import java.util.List;
+
+public class PredictBanknotes {
+    private PredictiveAnalysis predictiveAnalysis;
+
+    public PredictBanknotes() {
+        this.predictiveAnalysis = new PredictiveAnalysis();
     }
 
-    public void enableStation() {
-        isEnabled = true;
-        System.out.println("Station enabled."); 
-    }
-
-    public void disableStation() {
-        isEnabled = false;
-        System.out.println("Station disabled.");
-    }
-
-    public boolean isStationEnabled() {
-        return isEnabled;
+    public void checkBanknoteLevels() {
+        // Use DataCollector to collect banknote data
+        List<BanknoteData> banknoteData = predictiveAnalysis.getDataCollector().collectBanknoteData();
+        // Existing logic for maintaining banknotes
     }
 }

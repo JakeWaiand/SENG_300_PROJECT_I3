@@ -1,3 +1,28 @@
+/*
+ * Dongwen Tian			 30181813
+ * Fardin Rahman Sami            30172916
+ * Kenny Zeng 			 30151985
+ * Tahamina Chowdhury 	         30140920
+ * Sneh Patel 			 30086076
+ * Jake Waiand 			 30179510
+ * Roko Condic 			 30185671
+ * Farouq Arafeh		 30158214
+ * K M Chisty 			 30145123
+ * Mohammad Soomro 		 30130440
+ * Daniel Adebisi 		 30179418
+ * Eyuel Kahsay 		 30181884
+ * Almik Biju 			 30170902
+ * Kourosh Malayeri 	         30174987
+ * Hasan Qasim 			 30164530
+ * Ariba Noman 			 30111428
+ * Kyuyop (Andrew) Park          10046592
+ * Jiaqi Wu 			 30172397
+ * Ludovik Chojnacki 	         30178890
+ * Muhammad Niazi 		 30177775
+ * Firdovsi Aliyev 		 30178471
+ * Ratul Chakraborty	         30194422
+ */
+
 package com.thelocalmarketplace.software.test;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -24,6 +49,7 @@ import com.thelocalmarketplace.software.PayWithDebit;
 import com.thelocalmarketplace.software.StartSession;
 
 import ca.ucalgary.seng300.simulation.InvalidArgumentSimulationException;
+import powerutility.PowerGrid;
 
 /*
 Kimih Yan 30160567
@@ -59,7 +85,10 @@ public class PayWithDebitTest {
 
     @Before
     public void setUp() {
+    	
     	testStation = new SelfCheckoutStationGold();
+    	testStation.plugIn(PowerGrid.instance());
+    	testStation.turnOn();
     	try {
 			testSession = new StartSession(testStation);
 		} catch (OverloadedDevice | EmptyDevice e) {
@@ -92,7 +121,7 @@ public class PayWithDebitTest {
 			cardSwipeData = visaCard.swipe();
 			testSession.setTotalPrice(10);
 			System.setIn(new ByteArrayInputStream("Card Holder".getBytes()));
-	        paymentProcessor.payByDebit(cardSwipeData, bank);
+	        paymentProcessor.PayByDebitSwipe(visaCard, bank);
 		} catch (IOException e) {
 			fail();
 		}
@@ -106,7 +135,7 @@ public class PayWithDebitTest {
     	try {
     		cardSwipeData = visaCard.swipe();
             System.setIn(new ByteArrayInputStream("Invalid Signature".getBytes()));
-            paymentProcessor.payByDebit(cardSwipeData, bank);
+            paymentProcessor.PayByDebitSwipe(visaCard, bank);
     	} catch (IOException e) {
     		fail();
     	}
@@ -124,7 +153,7 @@ public class PayWithDebitTest {
     		
     		cardSwipeData = mastercard.swipe();
             System.setIn(new ByteArrayInputStream("Card Holder".getBytes()));
-            paymentProcessor.payByDebit(cardSwipeData, bank);
+            paymentProcessor.PayByDebitSwipe(visaCard, bank);
     	} catch (IOException e) {
     		fail();
     	}
@@ -141,7 +170,7 @@ public class PayWithDebitTest {
     		bank.addCardData("3456789012345678", "Card Owner", calendar2, "789", 1000);
 	        CardSwipeData cardSwipeData = americanExpressCard.swipe();
 	        System.setIn(new ByteArrayInputStream("Card Owner".getBytes()));
-	        paymentProcessor.payByDebit(cardSwipeData, bank);
+	        paymentProcessor.PayByDebitSwipe(visaCard, bank);
     	} catch (IOException e) {
     		fail();
     	} catch (InvalidArgumentSimulationException e) {

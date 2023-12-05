@@ -10,9 +10,11 @@ public class AttendantControl {
 	private boolean WDALram = false;
 	private boolean WDdecision;
 	private String attendantSearchResult;
+	private StartAttendantSession session;
 	
-	
-	
+	public AttendantControl(StartAttendantSession session) {
+		this.session = session;
+	}
 	
 	public void attendantSearchItem(String searchResults) { 
 		//gui must pass the attendants search result 
@@ -38,10 +40,11 @@ public class AttendantControl {
 	 */
 	public void sendWDMessage() {
 		WDALram = true;
-		//AttendantGUI.runWDAlaram() //here gui should run the alarm somehow
+		session.runWDAlaram() //here gui should run the alarm somehow
 		// approve? yes / no in the gui
 		// then calls setDecision with the String, chosen by the attendants button,
 		//either yes or no
+		
 			
 			
 	}

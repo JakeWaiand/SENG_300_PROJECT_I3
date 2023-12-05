@@ -24,24 +24,19 @@
  */
 
 package com.thelocalmarketplace.software;
-public class StationControl {
-    private boolean isEnabled;
 
-    public StationControl() {
-        isEnabled = false; // Stations start as disabled
+import java.util.List;
+
+public class PredictInk {
+    private PredictiveAnalysis predictiveAnalysis;
+
+    public PredictInk() {
+        this.predictiveAnalysis = new PredictiveAnalysis();
     }
 
-    public void enableStation() {
-        isEnabled = true;
-        System.out.println("Station enabled."); 
-    }
-
-    public void disableStation() {
-        isEnabled = false;
-        System.out.println("Station disabled.");
-    }
-
-    public boolean isStationEnabled() {
-        return isEnabled;
+    public void checkCoinLevels() {
+        // Use DataCollector to collect coin data
+        List<CoinData> coinData = predictiveAnalysis.getDataCollector().collectCoinData();
+        // Existing logic for maintaining coins
     }
 }

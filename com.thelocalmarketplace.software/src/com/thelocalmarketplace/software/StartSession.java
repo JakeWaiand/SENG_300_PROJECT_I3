@@ -1,13 +1,40 @@
+/*
+ * Dongwen Tian			 30181813
+ * Fardin Rahman Sami            30172916
+ * Kenny Zeng 			 30151985
+ * Tahamina Chowdhury 	         30140920
+ * Sneh Patel 			 30086076
+ * Jake Waiand 			 30179510
+ * Roko Condic 			 30185671
+ * Farouq Arafeh		 30158214
+ * K M Chisty 			 30145123
+ * Mohammad Soomro 		 30130440
+ * Daniel Adebisi 		 30179418
+ * Eyuel Kahsay 		 30181884
+ * Almik Biju 			 30170902
+ * Kourosh Malayeri 	         30174987
+ * Hasan Qasim 			 30164530
+ * Ariba Noman 			 30111428
+ * Kyuyop (Andrew) Park          10046592
+ * Jiaqi Wu 			 30172397
+ * Ludovik Chojnacki 	         30178890
+ * Muhammad Niazi 		 30177775
+ * Firdovsi Aliyev 		 30178471
+ * Ratul Chakraborty	         30194422
+ */
+
 package com.thelocalmarketplace.software;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Currency;
 import java.io.BufferedReader;
 
+import com.jjjwelectronics.EmptyDevice;
 import com.jjjwelectronics.Mass;
 import com.jjjwelectronics.Numeral;
 import com.jjjwelectronics.OverloadedDevice;
@@ -31,86 +58,108 @@ import com.thelocalmarketplace.hardware.SelfCheckoutStationSilver;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationGold;
 import com.thelocalmarketplace.hardware.external.ProductDatabases;
 
-/*
-Kimih Yan 30160567
-Kenny Zeng 30151985 
-Daniel Adebisi 30179418
-Kourosh Malayeri 30174987
-Tahamina Chowdhury 30140920
-Firdovsi Aliyev 30178471
-Hasan Qasim 30164530
-Yasna Naseri  30182402
-Muhammad Niazi 30177775
-Yasir Hussain 30195085
-Almik biju 30170902 
-Ariba Noman 30111428
-*/
+
 
 public class StartSession {
-	public static AbstractSelfCheckoutStation station;
-	public static String level;
-	public static AbstractElectronicScale scale;
-	public static AbstractCardReader cardReader;
-	public static IBarcodeScanner handHeldScanner;
-	public static IBarcodeScanner mainScanner;
-	public static boolean isActive;
-	public static boolean activeSession;
-	public static BanknoteInsertionSlot cashSlot;
-	public static PayWithCash cashListener; 
-	public static boolean paymentSuccessful = false;
+	private AbstractSelfCheckoutStation station;
+	private AbstractElectronicScale scale;
+	private AbstractCardReader cardReader;
+	private IBarcodeScanner handHeldScanner;
+	private IBarcodeScanner mainScanner;
+	private boolean isActive;
+	private BanknoteInsertionSlot cashSlot;
+	
+	private PayWithCash cashListener; 
+	private boolean paymentSuccessful = false;
+	private ItemProcessingControl itemControl;
+	private WeightDiscrepancy WD;
+	private PayWithDebit pay_debit;
+	private PayWithCredit pay_Credit;
+	private PayWithCash pay_Cash;
+	private PrintReceipt printReceipt;
+	
+	private EScaleListenerImplement scaleListener;
+	private BarcodeListenerImplement barcodeListener;
+	private CardlistenerImplement cardListener;
+	private AbstractElectronicScale scanScale;
+	private ArrayList<String> pickedItems; //this can be used for print receipt
+	private ArrayList<Long> priceList; //this can be used for print receipt
+	private ArrayList<Mass> weightList;
+	private long totalPrice; //this can be used for print receipt
+	private Mass expectedWeight = new Mass(0);
+	private AttendantControl attendantControl;
+	
+
 	
 	
 	
-	public static Currency cad = Currency.getInstance("CAD");
-	public static Banknote banknote5 = new Banknote(cad,new BigDecimal("5")); static Banknote banknote10 = new Banknote(cad,new BigDecimal("10")); static Banknote banknote20 = new Banknote(cad,new BigDecimal("20")); static Banknote banknote50 = new Banknote(cad,new BigDecimal("50")); static Banknote banknote100 = new Banknote(cad,new BigDecimal("100"));
-	public static BigDecimal[] banknoteDenominations = {new BigDecimal("5"),new BigDecimal("10"),new BigDecimal("20"),new BigDecimal("50"),new BigDecimal("100")};
-	public static Banknote[] banknotes = {banknote5, banknote10, banknote20 ,banknote50, banknote100};
+	private Currency cad = Currency.getInstance("CAD");
 	
-	public static Coin coin1 = new Coin(cad,new BigDecimal("0.01")); static Coin coin5 = new Coin(cad,new BigDecimal("0.05")); static Coin coin10 = new Coin(cad,new BigDecimal("0.10")); static Coin coin25 = new Coin(cad,new BigDecimal("0.25")); static Coin coin100 = new Coin(cad,new BigDecimal("1")); static Coin coin200 = new Coin(cad,new BigDecimal("2"));
-	public static BigDecimal[] coinDenominations = {new BigDecimal("0.05"), new BigDecimal("0.10"), new BigDecimal("0.25"), new BigDecimal("1"), new BigDecimal("2")};
-	public static Coin[] coins = {coin5,coin10,coin25,coin100,coin200};
+	private BigDecimal[] banknoteDenominations = {new BigDecimal("5"),new BigDecimal("10"),new BigDecimal("20"),new BigDecimal("50"),new BigDecimal("100")};
+	private Banknote banknote5 = new Banknote(cad, banknoteDenominations[0]); Banknote banknote10 = new Banknote(cad, banknoteDenominations[1]); Banknote banknote20 = new Banknote(cad, banknoteDenominations[2]); Banknote banknote50 = new Banknote(cad, banknoteDenominations[3]); Banknote banknote100 = new Banknote(cad, banknoteDenominations[4]);
+	private Banknote[] banknotes = {banknote5, banknote10, banknote20 ,banknote50, banknote100};
 	
-	public static BanknoteInsertionSlot banknoteSlot = new BanknoteInsertionSlot();
-	public static BanknoteValidator banknoteValidator = new BanknoteValidator(cad,banknoteDenominations);
+	
+	private BigDecimal[] coinDenominations = {new BigDecimal("0.01"), new BigDecimal("0.05"), new BigDecimal("0.10"), new BigDecimal("0.25"), new BigDecimal("1.0"), new BigDecimal("2.0")};
+	private Coin coin1 = new Coin(cad, coinDenominations[0]); Coin coin5 = new Coin(cad, coinDenominations[1]); Coin coin10 = new Coin(cad, coinDenominations[2]); Coin coin25 = new Coin(cad, coinDenominations[3]); Coin coin100 = new Coin(cad, coinDenominations[4]); Coin coin200 = new Coin(cad, coinDenominations[5]);
+	private Coin[] coins = {coin5,coin10,coin25,coin100,coin200};
+	
+	private BanknoteInsertionSlot banknoteSlot = new BanknoteInsertionSlot();
+	private BanknoteValidator banknoteValidator = new BanknoteValidator(cad,banknoteDenominations);
 	//BanknoteStorageUnit banknoteStorage = new BanknoteStorageUnit();
 	
-	public static CoinSlot coinSlot = new CoinSlot();
-	public static CoinValidator coinValidator = new CoinValidator(cad,Arrays.asList(coinDenominations));
+	private CoinSlot coinSlot = new CoinSlot();
+	private CoinValidator coinValidator = new CoinValidator(cad,Arrays.asList(coinDenominations));
 	
 	
-	
-	
-	public StartSession(AbstractSelfCheckoutStation input_station) throws OverloadedDevice {
-		station = input_station;
-		scale = (AbstractElectronicScale)station.baggingArea;
-		cardReader = (AbstractCardReader)station.cardReader;
-		handHeldScanner = station.handheldScanner;
-		mainScanner = station.mainScanner;
-		station.turnOn();
-		if (station instanceof SelfCheckoutStationBronze) {
-			level = "bronze";
-		}
-		else if (station instanceof SelfCheckoutStationSilver) {
-			level = "silver";
-		}
-		else if (station instanceof SelfCheckoutStationGold){
-			level = "gold";
-		}
-		Add_item addItem = new Add_item();
-		WeightDiscrepancy WD = new WeightDiscrepancy();
-		PayWithDebit pay_debit = new PayWithDebit();
-		PayWithCredit pay_Credit = new PayWithCredit();
-		EScaleListenerImplement scaleListener = new EScaleListenerImplement();
-		BarcodeListenerImplement barcodeListener = new BarcodeListenerImplement();
-		CardlistenerImplement cardListener = new CardlistenerImplement();
-		scale.register(scaleListener);
+	public StartSession(AbstractSelfCheckoutStation input_station) throws OverloadedDevice, EmptyDevice {
+		setStation(input_station);
+		setScale((AbstractElectronicScale)station.getBaggingArea());
+		cardReader = (AbstractCardReader)station.getCardReader();
+		setHandHeldScanner(station.getHandheldScanner());
+		setMainScanner(station.getMainScanner());
+		setScanScale((AbstractElectronicScale) station.getScanningArea());
+		
+		/* 
+		 * Turn on should not be called in StartSession, the selfCheckoutStation being turned on
+		 * should be necessary for StartSession to be called in the first place.
+		 * Dongwen
+		*/
+		//station.turnOn();
+		
+		setWD(new WeightDiscrepancy(this));
+		setItemControl(new ItemProcessingControl(this));
+		pay_debit = new PayWithDebit(this);
+		pay_Credit = new PayWithCredit(this);
+		printReceipt = new PrintReceipt(this);
+		
+		setScaleListener(new EScaleListenerImplement(this));
+		barcodeListener = new BarcodeListenerImplement(this);
+		cardListener = new CardlistenerImplement();
+		
+		PayWithCash.setSession(this);
+		cashSlot = input_station.getBanknoteInput();
+
+		getScale().register(getScaleListener());
 		cardReader.register(cardListener);
-		handHeldScanner.register(barcodeListener);
-		mainScanner.register(barcodeListener);
-		cashSlot.attach(cashListener);
+		getHandHeldScanner().register(barcodeListener);
+		getMainScanner().register(barcodeListener);
+		cashSlot.attach(new PayWithCash());
 		isActive = true;
-		displaySplashScreen();
-		listenForInput();
+		getScanScale().register(getScaleListener());
+		
+		/*
+		 * The welcome screen should already be displayed before startSession is called
+		 * (The screen should be displayed when the station is turned on eg. when aComponentWasTurnedOn
+		 * event is called, there was some event like that in the hardware)
+		 * 
+		 * Listen for input should also not be here, instead, StartSession should be called after there is input, 
+		 * instead of listening for input after startSession is called
+		 * 
+		 * Dongwen
+		 */
+		//displaySplashScreen();
+		//listenForInput();
 		
 		
 		input_station.configureBanknoteDenominations(banknoteDenominations);
@@ -126,12 +175,12 @@ public class StartSession {
    
     public void displaySplashScreen() throws OverloadedDevice {
         System.out.println("Press anywhere to start");
-        handHeldScanner.enable();
-        mainScanner.enable();
+        getHandHeldScanner().enable();
+        getMainScanner().enable();
         cardReader.enable();
-        scale.enable();
+        getScale().enable();
         cashSlot.enable();
-        station.coinSlot.enable();
+        station.getCoinSlot().enable();
     }
      public void listenForInput() throws OverloadedDevice {
         System.out.println("waiting......");
@@ -158,16 +207,216 @@ public class StartSession {
   
  
     public void endSession() throws OverloadedDevice {
-    	 handHeldScanner.disable();
-         mainScanner.disable();
+    	 getHandHeldScanner().disable();
+         getMainScanner().disable();
          cardReader.disable();
-         scale.disable();
+         getScale().disable();
          cashSlot.disable();
-         station.coinSlot.disable();
+         station.getCoinSlot().disable();   //changes need to be made
+         station.getScanningArea().disable();
+         
+         /*
+          * lol, someone forgot to change isActive to false when ending the session, I had to add it in
+          * 
+          * Dongwen
+          */
+         isActive = false;
         
     }
 	
+    public BigDecimal[] getBanknoteDenominations() {
+    	return banknoteDenominations;
+    }
+    
+    public BigDecimal[] getCoinDenominations() {
+    	return coinDenominations;
+    }
+    
+    public CoinSlot getCoinSlot() {
+    	return coinSlot;
+    }
+    
+    public BanknoteInsertionSlot getBanknoteSlot() {
+    	return banknoteSlot;
+    }
+    
+
+
+	public AbstractSelfCheckoutStation getStation() {
+		return station;
+	}
 	
+	public Banknote[] getBanknotes() {
+		return banknotes;
+	}
+	
+	public Coin[] getCoins() {
+		return coins;
+	}
+
+
+
+	public void setStation(AbstractSelfCheckoutStation station) {
+		this.station = station;
+	}
+
+
+
+	public ItemProcessingControl getItemControl() {
+		return itemControl;
+	}
+
+
+
+	public void setItemControl(ItemProcessingControl itemControl) {
+		this.itemControl = itemControl;
+	}
+
+
+
+	public AbstractElectronicScale getScanScale() { // for the plu items
+		return scanScale;
+	}
+
+
+
+	public void setScanScale(AbstractElectronicScale scanScale) {
+		this.scanScale = scanScale;
+	}
+
+
+
+	public AbstractElectronicScale getScale() {
+		return scale;
+	}
+
+
+
+	public void setScale(AbstractElectronicScale scale) {
+		this.scale = scale;
+	}
+
+
+
+	public IBarcodeScanner getHandHeldScanner() {
+		return handHeldScanner;
+	}
+
+
+
+	public void setHandHeldScanner(IBarcodeScanner handHeldScanner) {
+		this.handHeldScanner = handHeldScanner;
+	}
+
+
+
+	public IBarcodeScanner getMainScanner() {
+		return mainScanner;
+	}
+
+
+
+	public void setMainScanner(IBarcodeScanner mainScanner) {
+		this.mainScanner = mainScanner;
+	}
+
+
+
+
+
+	public ArrayList<String> getPickedItems() {
+		return pickedItems;
+	}
+
+
+
+	public void setPickedItems(ArrayList<String> pickedItems) {
+		this.pickedItems = pickedItems;
+	}
+
+
+
+	public long getTotalPrice() {
+		return totalPrice;
+	}
+
+
+
+	public void setTotalPrice(long totalPrice) {
+		this.totalPrice = totalPrice;
+	}
+
+
+
+	public ArrayList<Long> getPriceList() {
+		return priceList;
+	}
+
+
+
+	public void setPriceList(ArrayList<Long> priceList) {
+		this.priceList = priceList;
+	}
+
+
+
+	public Mass getExpectedWeight() {
+		return expectedWeight;
+	}
+
+
+
+	public void setExpectedWeight(Mass expectedWeight) {
+		this.expectedWeight = expectedWeight;
+	}
+
+
+
+	public ArrayList<Mass> getWeightList() {
+		return weightList;
+	}
+
+
+
+	public void setWeightList(ArrayList<Mass> weightList) {
+		this.weightList = weightList;
+	}
+
+
+
+	public WeightDiscrepancy getWD() {
+		return WD;
+	}
+
+
+
+	public void setWD(WeightDiscrepancy wD) {
+		WD = wD;
+	}
+
+
+
+	public EScaleListenerImplement getScaleListener() {
+		return scaleListener;
+	}
+
+
+
+	public void setScaleListener(EScaleListenerImplement scaleListener) {
+		this.scaleListener = scaleListener;
+	}
+
+
+
+	public AttendantControl getAttendantControl() {
+		return attendantControl;
+	}
+
+
+
+	public void setAttendantControl(AttendantControl attendantControl) {
+		this.attendantControl = attendantControl;
+	}
 
 	
 	

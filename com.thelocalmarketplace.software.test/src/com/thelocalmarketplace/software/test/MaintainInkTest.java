@@ -23,25 +23,8 @@
  * Ratul Chakraborty	         30194422
  */
 
-package com.thelocalmarketplace.software;
-public class StationControl {
-    private boolean isEnabled;
+package com.thelocalmarketplace.software.test;
 
-    public StationControl() {
-        isEnabled = false; // Stations start as disabled
-    }
+public class MaintainInkTest {
 
-    public void enableStation() {
-        isEnabled = true;
-        System.out.println("Station enabled."); 
-    }
-
-    public void disableStation() {
-        isEnabled = false;
-        System.out.println("Station disabled.");
-    }
-
-    public boolean isStationEnabled() {
-        return isEnabled;
-    }
 }

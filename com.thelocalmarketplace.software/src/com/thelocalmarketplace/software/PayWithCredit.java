@@ -1,3 +1,28 @@
+/*
+ * Dongwen Tian			 30181813
+ *Fardin Rahman Sami             30172916
+ * Kenny Zeng 			 30151985
+ * Tahamina Chowdhury 	         30140920
+ * Sneh Patel 			 30086076
+ * Jake Waiand 			 30179510
+ * Roko Condic 			 30185671
+ * Farouq Arafeh		 30158214
+ * K M Chisty 			 30145123
+ * Mohammad Soomro 		 30130440
+ * Daniel Adebisi 		 30179418
+ * Eyuel Kahsay 		 30181884
+ * Almik Biju 			 30170902
+ * Kourosh Malayeri 	         30174987
+ * Hasan Qasim 			 30164530
+ * Ariba Noman 			 30111428
+ * Kyuyop (Andrew) Park          10046592
+ * Jiaqi Wu 			 30172397
+ * Ludovik Chojnacki 	         30178890
+ * Muhammad Niazi 		 30177775
+ * Firdovsi Aliyev 		 30178471
+ * Ratul Chakraborty	         30194422
+ */
+
 package com.thelocalmarketplace.software;
 
 import com.jjjwelectronics.card.Card;
@@ -122,12 +147,12 @@ public class PayWithCredit {
 
         verifyCardHolder(userSignature, card);
         
-        session.cardReader.swipe(card);
+        session.getStation().getCardReader().swipe(card);
         
         sendMessage(card, bank, amountDue);
     }
 
-    public static void swipePayment(Card card) {
+    public static void swipePayment(Card card) throws IOException {
         CardIssuer bank;
 		
 			bank = selectCardType();
@@ -159,7 +184,7 @@ public class PayWithCredit {
     
     public static void PayByCreditTap(Card card, CardIssuer bank) throws IOException {
         double amountDue = session.getTotalPrice();
-        session.cardReader.tap(card);
+        session.getStation().getCardReader().tap(card);
         sendMessage(card, bank, amountDue);
     }
 
@@ -186,7 +211,7 @@ public class PayWithCredit {
                     System.out.println("Remaining balance: " + (session.getTotalPrice() - amount));
                 }
             }
-            session.cardReader.remove();
+            session.getStation().getCardReader().remove();
 		
 	}
     
@@ -195,8 +220,8 @@ public class PayWithCredit {
     	 System.out.println("please enter your PIN");
          Scanner pinScanner = new Scanner(System.in);
          String userPin = pinScanner.next();
-         session.cardReader.insert(card, userPin);
-         sendMessage((CardInsertData) session.cardReader.insert(card, userPin),bank,amountDue);
+         session.getStation().getCardReader().insert(card, userPin);
+         sendMessage((CardInsertData) session.getStation().getCardReader().insert(card, userPin),bank,amountDue);
 	}
 
 
