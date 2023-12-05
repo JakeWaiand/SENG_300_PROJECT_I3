@@ -1,12 +1,16 @@
 
-package com.thelocalmarketplace.software.gui;
+package com.thelocalmarketplace.software.GUI;
 
 import javax.swing.*;
+
+import com.thelocalmarketplace.software.StartSession;
+
 import java.awt.*;
 
 public class AddWindow extends JPanel {
 
-    public static void open() {
+    public static void open(StartSession session) {
+    	
         JFrame frame = new JFrame("Self Checkout Station");
         frame.setSize(1000, 600);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -34,20 +38,15 @@ public class AddWindow extends JPanel {
             button.addActionListener(e -> {
                 if ("PLU Code".equals(text)) {
                     frame.dispose(); // Close the AddWindow
-                    PluWindow.open(); // Open the PLU window
+                    PluWindow.open(session); // Open the PLU window
                 } else if ("Purchase Bags".equals(text)) {
                     frame.dispose(); // Close the AddWindow
                     PurchaseBagsWindow.open(); // Open the PurchaseBagsWindow
                 } else if ("Visual Catalogue".equals(text)) {
                     frame.dispose(); // Close the AddWindow
                     VisualCatalogue.open();
-                } else if ("Add Own Bags".equals(text)) {
-                    frame.dispose(); // Close the AddWindow
-                    AddOwnBagsWindow.open(); // Open the AddOwnBagsWindow
-                } else if ("Scan Items".equals(text)) {
-                    frame.dispose(); // Close the AddWindow
-                    ScanItemWindow.open(); // Open the AddOwnBagsWindow
-                }// Add more else if blocks here for other buttons as needed
+                }
+                // You can add more else if blocks here for other buttons as needed
             });
             buttonsPanel.add(button);
         }
@@ -60,6 +59,3 @@ public class AddWindow extends JPanel {
         frame.setVisible(true);
     }
 }
-
-
-

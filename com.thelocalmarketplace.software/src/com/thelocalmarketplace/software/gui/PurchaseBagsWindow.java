@@ -1,6 +1,9 @@
-package com.thelocalmarketplace.software.gui;
+package com.thelocalmarketplace.software.GUI;
 
 import javax.swing.*;
+
+import com.thelocalmarketplace.software.StartSession;
+
 import java.awt.*;
 
 public class PurchaseBagsWindow {
@@ -8,7 +11,7 @@ public class PurchaseBagsWindow {
     private static int bagCount = 0; // To keep track of the number of bags
     private static JTextField bagCountField; // To display the number of bags
 
-    public static void open() {
+    public static void open(StartSession session) {
         JFrame frame = new JFrame("Purchase Bags");
         frame.setSize(800, 600);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -75,7 +78,7 @@ public class PurchaseBagsWindow {
         JButton backButton = new JButton("Back");
         backButton.addActionListener(e -> {
             frame.dispose(); // Close the PLU window
-            AddWindow.open(); // Open the AddWindow again
+            AddWindow.open(session); // Open the AddWindow again
         });
 
         // Buttons panel for Add Bags and Back
@@ -94,6 +97,3 @@ public class PurchaseBagsWindow {
         frame.setVisible(true);
     }
 }
-
-
-
