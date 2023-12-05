@@ -1,5 +1,7 @@
 package com.thelocalmarketplace.software;
 
+import java.util.List;
+
 public class PredictiveModel {
     
     public boolean predictLowInk(List<InkUsageData> inkUsageData) {

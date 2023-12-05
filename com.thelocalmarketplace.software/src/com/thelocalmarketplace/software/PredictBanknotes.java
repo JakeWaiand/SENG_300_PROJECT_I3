@@ -1,9 +1,11 @@
 package com.thelocalmarketplace.software;
 
-public class MaintainBanknotes {
+import java.util.List;
+
+public class PredictBanknotes {
     private PredictiveAnalysis predictiveAnalysis;
 
-    public MaintainBanknotes() {
+    public PredictBanknotes() {
         this.predictiveAnalysis = new PredictiveAnalysis();
     }
 

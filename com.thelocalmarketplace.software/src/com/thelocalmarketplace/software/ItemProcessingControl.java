@@ -291,9 +291,9 @@ public class HandleBulkyItem {
         }
     }
 
-    private static boolean isSessionActive() {
+    private boolean isSessionActive() {
         // Simulate session being active
-        return StartSession.getInSession();
+        return StartSession.isActive();
     }
 
     private static boolean customerSignalsNoBagging() {

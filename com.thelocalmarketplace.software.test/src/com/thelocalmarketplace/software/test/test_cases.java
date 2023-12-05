@@ -4,7 +4,16 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-public class DataCollectorTest {
+import com.tdc.banknote.Banknote;
+import com.tdc.coin.Coin;
+import com.thelocalmarketplace.software.DataCollector;
+import com.thelocalmarketplace.software.PredictBanknotes;
+import com.thelocalmarketplace.software.PredictCoins;
+import com.thelocalmarketplace.software.PredictInk;
+import com.thelocalmarketplace.software.PredictiveAnalysis;
+import com.thelocalmarketplace.software.PredictiveModel;
+
+public class test_cases {
 
     private DataCollector dataCollector;
 
@@ -29,15 +38,15 @@ public class DataCollectorTest {
     }
 
     //  tests for other data collection methods
-}
+//}
 
 // PredictBanknotesTest.java
-public class PredictBanknotesTest {
+//public class PredictBanknotesTest {
 
     private PredictBanknotes predictBanknotes;
 
     @Before
-    public void setUp() {
+    public void setUp2() {
         predictBanknotes = new PredictBanknotes();
     }
 
@@ -51,19 +60,19 @@ public class PredictBanknotesTest {
     @Test(expected = IllegalArgumentException.class)
     public void testInvalidBanknotePrediction() {
         Banknote invalidBanknote = null; // or any invalid data
-        predictBanknotes.predictBanknoteAuthenticity(invalidBanknote);
+        PredictBanknotes.predictBanknoteAuthenticity(invalidBanknote);
     }
 
     //  tests for specific edge cases
-}
+//}
 
 // PredictCoinsTest.java
-public class PredictCoinsTest {
+//public class PredictCoinsTest {
 
     private PredictCoins predictCoins;
 
     @Before
-    public void setUp() {
+    public void setUp3() {
         predictCoins = new PredictCoins();
     }
 
@@ -82,15 +91,15 @@ public class PredictCoinsTest {
     }
 
     //  tests for specific edge cases
-}
+//}
 
 // PredictInkTest.java
-public class PredictInkTest {
+//public class PredictInkTest {
 
     private PredictInk predictInk;
 
     @Before
-    public void setUp() {
+    public void setUp4() {
         predictInk = new PredictInk();
     }
 
@@ -102,15 +111,15 @@ public class PredictInkTest {
     }
 
     // tests for error handling and unusual data
-}
+//}
 
 // PredictiveAnalysisTest.java
-public class PredictiveAnalysisTest {
+//public class PredictiveAnalysisTest {
 
     private PredictiveAnalysis predictiveAnalysis;
 
     @Before
-    public void setUp() {
+    public void setUp5() {
         predictiveAnalysis = new PredictiveAnalysis();
     }
 
@@ -129,15 +138,15 @@ public class PredictiveAnalysisTest {
     }
 
     //  tests for error handling and outlier handling
-}
+//}
 
 // PredictiveModelTest.java
-public class PredictiveModelTest {
+//public class PredictiveModelTest {
 
     private PredictiveModel predictiveModel;
 
     @Before
-    public void setUp() {
+    public void setUp6() {
         predictiveModel = new PredictiveModel();
     }
 

@@ -1,9 +1,11 @@
 package com.thelocalmarketplace.software;
 
-public class MaintainCoins {
+import java.util.List;
+
+public class PredictInk {
     private PredictiveAnalysis predictiveAnalysis;
 
-    public MaintainCoins() {
+    public PredictInk() {
         this.predictiveAnalysis = new PredictiveAnalysis();
     }
 

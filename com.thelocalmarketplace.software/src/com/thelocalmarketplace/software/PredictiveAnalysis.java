@@ -1,5 +1,7 @@
 package com.thelocalmarketplace.software;
 
+import java.util.List;
+
 public class PredictiveAnalysis {
     private DataCollector dataCollector;
     private PredictiveModel predictiveModel;

@@ -1,5 +1,6 @@
 package com.thelocalmarketplace.software;
 
+import java.util.List;
 
 public class DataCollector {
 
