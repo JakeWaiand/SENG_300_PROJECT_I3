@@ -5,6 +5,8 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -12,9 +14,10 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
-public class ScanItemsWindow {
-        public static void open() {
-        JFrame frame = new JFrame("Scan Items");
+public class ScanItemWindow {
+
+    public static void open() {
+        JFrame frame = new JFrame("Scan Item");
         frame.setSize(800, 600);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new GridBagLayout());
@@ -22,7 +25,7 @@ public class ScanItemsWindow {
 
         GridBagConstraints gbc = new GridBagConstraints();
 
-        JLabel headingLabel = new JLabel("Scan Items");
+        JLabel headingLabel = new JLabel("Scan Item");
         headingLabel.setFont(new Font("Serif", Font.BOLD, 33));
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -39,7 +42,7 @@ public class ScanItemsWindow {
 
         JButton backButton = new JButton("Back");
         backButton.addActionListener(e -> {
-            frame.dispose(); // Close the ScanItemsWindow
+            frame.dispose(); // Close the ScanItemWindow
             AddWindow.open(); // Open the AddWindow again
         });
         gbc.gridx = 0;
@@ -62,8 +65,7 @@ public class ScanItemsWindow {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             // Run GUI construction in the Event-Dispatching Thread for thread safety
-            ScanItemsWindow.open();
+            ScanItemWindow.open();
         });
     }
 }
-
