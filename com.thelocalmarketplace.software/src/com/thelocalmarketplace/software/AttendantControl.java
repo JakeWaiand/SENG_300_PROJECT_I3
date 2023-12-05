@@ -5,87 +5,62 @@ import java.util.List;
 import java.util.Set;
 
 import com.jjjwelectronics.scanner.Barcode;
-import com.thelocalmarketplace.software.gui.AttendantStationGUI;
 
 public class AttendantControl {
-    private boolean WDALram = false;
-    private boolean WDdecision;
-    private String attendantSearchResult;
-    private AttendantStationGUI attendantStationGUI;  // Add reference to the GUI
+	private boolean WDALram = false;
+	private boolean WDdecision;
+	private String attendantSearchResult;
+	private StartAttendantSession session;
+	
+	public AttendantControl(StartAttendantSession session) {
+		this.session = session;
+	}
+	
+	public void attendantSearchItem(String searchResults) { 
+		//gui must pass the attendants search result 
+		attendantSearchResult = searchResults; 
+		Set<String> keySet = InternalDatabase.internalDataBase_Description.keySet();
+			List<String> keyList = new ArrayList<String>();
+			keyList.addAll(keySet);
+		for(int i = 0; i < keySet.size();i++) {
+			if (keyList.get(i).contains(attendantSearchResult)){
+				System.out.print(keyList.get(i)); //this prints all the item descriptions that have the
+				//text result in them. but you need to change print to gui writings(create a method for it and call it here)
+			} // after the item has been picked, you can call one of addItemText methods in ItemProcessing control to add it.
+			 //AttendantControl and ItemProcessingcontrol are both instantiated in startSession, you can use the getters to get them
+			
+				
+		}
+		
+	}
+	
+	/**
+	 * when the attendant receives a weight discrepancy message
+	 * WD stands for weight discrepancy
+	 */
+	public void sendWDMessage() {
+		WDALram = true;
+		session.runWDAlaram() //here gui should run the alarm somehow
+		// approve? yes / no in the gui
+		// then calls setDecision with the String, chosen by the attendants button,
+		//either yes or no
+		
+			
+			
+	}
+	
+	public void setWDDecision(String decision) { //Gui team calls this
+		if (decision == "yes")
+			this.WDdecision = true;
+		else
+			this.WDdecision = false;
+		
+	}
+	public boolean getWDDecision() {
+		return this.WDdecision;
+	}
+	
+	
+	
 
-    // Constructor
-    public AttendantControl() {
-        // Initialize the GUI reference
-        this.attendantStationGUI = null;
-    }
-
-    // Setter method for GUI reference
-    public void setAttendantStationGUI(AttendantStationGUI attendantStationGUI) {
-        this.attendantStationGUI = attendantStationGUI;
-    }
-
-    public void attendantSearchItem(String searchResults) {
-        attendantSearchResult = searchResults;
-        Set<String> keySet = InternalDatabase.internalDataBase_Description.keySet();
-        List<String> keyList = new ArrayList<String>();
-        keyList.addAll(keySet);
-
-        // Use StringBuilder to concatenate matched item descriptions
-        StringBuilder matchedDescriptions = new StringBuilder();
-
-        for (int i = 0; i < keySet.size(); i++) {
-            if (keyList.get(i).contains(attendantSearchResult)) {
-                // Print or update GUI with item descriptions
-                System.out.print(keyList.get(i));
-
-                // Append the matched description to the StringBuilder
-                matchedDescriptions.append(keyList.get(i)).append("\n");
-            }
-        }
-
-        // Update the GUI with the concatenated descriptions
-        attendantStationGUI.updateResultArea(matchedDescriptions.toString());
-    }
-
-    public void sendWDMessage() {
-        WDALram = true;
-        // Show visual alarm in GUI
-        attendantStationGUI.runWDAlarm();
-        // Show a dialog for the attendant to make a decision
-        showDecisionDialog();
-    }
-
-    public void setWDDecision(String decision) {
-        if (decision.equals("yes")) {
-            this.WDdecision = true;
-        } else {
-            this.WDdecision = false;
-        }
-    }
-
-    public boolean getWDDecision() {
-        return this.WDdecision;
-    }
-
-    // New method to show decision dialog
-    private void showDecisionDialog() {
-        // Your existing implementation of showDecisionDialog
-        // ...
-
-        // Here, you can interact with the GUI as needed
-        // Example: attendantStationGUI.showDecisionDialog();
-    }
-
-    // Additional methods for your features
-    public void addItemByText(String itemText) {
-        // Implementation for adding an item by text
-    }
-
-    public void enableSession() {
-        // Implementation for enabling session
-    }
-
-    public void disableSession() {
-        // Implementation for disabling session
-    }
 }

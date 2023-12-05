@@ -1,28 +1,3 @@
-/*
- * Dongwen Tian			 30181813
- * Fardin Rahman Sami            30172916
- * Kenny Zeng 			 30151985
- * Tahamina Chowdhury 	         30140920
- * Sneh Patel 			 30086076
- * Jake Waiand 			 30179510
- * Roko Condic 			 30185671
- * Farouq Arafeh		 30158214
- * K M Chisty 			 30145123
- * Mohammad Soomro 		 30130440
- * Daniel Adebisi 		 30179418
- * Eyuel Kahsay 		 30181884
- * Almik Biju 			 30170902
- * Kourosh Malayeri 	         30174987
- * Hasan Qasim 			 30164530
- * Ariba Noman 			 30111428
- * Kyuyop (Andrew) Park          10046592
- * Jiaqi Wu 			 30172397
- * Ludovik Chojnacki 	         30178890
- * Muhammad Niazi 		 30177775
- * Firdovsi Aliyev 		 30178471
- * Ratul Chakraborty	         30194422
- */
-
 package com.thelocalmarketplace.software;
 
 import com.jjjwelectronics.IDevice;
@@ -35,14 +10,26 @@ import com.jjjwelectronics.scale.ElectronicScaleListener;
 import com.jjjwelectronics.scale.IElectronicScale;
 import com.thelocalmarketplace.hardware.*;
 
-
+/*
+Kimih Yan 30160567
+Kenny Zeng 30151985 
+Daniel Adebisi 30179418
+Kourosh Malayeri 30174987
+Tahamina Chowdhury 30140920
+Firdovsi Aliyev 30178471
+Hasan Qasim 30164530
+Yasna Naseri  30182402
+Muhammad Niazi 30177775
+Yasir Hussain 30195085
+Almik biju 30170902 
+*/
 
 public class WeightDiscrepancy { 
 	private Mass startingWeight = new Mass(0);
 	private Mass actualWeight;
 	private boolean weightDiscrepancy = false; // 
 	private AbstractSelfCheckoutStation station;
-	//private AbstractElectronicScale scale;
+	private AbstractElectronicScale scale;
 	private boolean weightEcxcess;
 	private StartSession session;
 	// all prints must go into gui.
@@ -58,38 +45,31 @@ public class WeightDiscrepancy {
 	
 	public void evaluate() throws OverloadedDevice {
 		
-		MassDifference difference = ((AbstractElectronicScale) session.getStation().getBaggingArea()).getCurrentMassOnTheScale().difference(session.getExpectedWeight());
+		MassDifference difference = scale.getCurrentMassOnTheScale().difference(session.getExpectedWeight());
 		Mass absDifference = difference.abs();
-		 if (absDifference.compareTo(session.getStation().getBaggingArea().getSensitivityLimit()) == -1) {
-			 set_weightDiscrepancy(false);
-			 enableInteractions(session.getStation());
+		 if (absDifference.compareTo(scale.getSensitivityLimit()) == -1) {
+			 set_weightDiscrepancy(false); 
 		 }
-		else if (((AbstractElectronicScale) session.getStation().getBaggingArea()).getCurrentMassOnTheScale().compareTo(session.getExpectedWeight()) == 1) {
-			disableInteractions(session.getStation());
+		else if (scale.getCurrentMassOnTheScale().compareTo(session.getExpectedWeight()) == 1) {
 			set_weightDiscrepancy(true);
 			System.out.println("unexpected item in bagging area"
 					+ "please remove the item before continuing.");
 		}
-		else if (((AbstractElectronicScale) session.getStation().getBaggingArea()).getCurrentMassOnTheScale().compareTo(session.getExpectedWeight()) == -1) {
-			disableInteractions(session.getStation());
+		else if (scale.getCurrentMassOnTheScale().compareTo(session.getExpectedWeight()) == -1) {
 			set_weightDiscrepancy(true);
 			System.out.println("please put the item in the bagging area.");
-			
-			//session.getAttendantControl().sendWDMessage(); 
-			
-			/*
-	    	if (session.getAttendantControl().getWDDecision() == true) // if the attandant approves the 
-	    		removeLastItemWeight();								// WD then the last items weight is not calculated. 
-	    	else
-	    		System.out.println("please wait for assistance"); // gui
-	    	*/
+			session.getAttendantControl().sendWDMessage(); 
+	    	while (session.getAttendantControl().getWDDecision() == false) // if the attandant approves the 
+	    		System.out.println("please wait for assistance");
+	    	removeLastItemWeight();								// WD then the last items weight is not calculated. 
+	    	
+	    		 
 		}
 		 	
 	}
 	
-	
 	public void exceedWeightEvaluate() {
-		setWeightExcess(true);
+		setWeightEcxcess(true);
 		while(isWeightEcxcess()) {
 			System.out.println("the scale has exceeded its limit. please remove the last item you added.");
 			
@@ -114,18 +94,15 @@ public class WeightDiscrepancy {
 		station.getScanningArea().enable(); 
 		
 	} 
-	
-	/*
 	public void removeLastItem() {
     if (session.getPickedItems().isEmpty()) {
     		System.out.println("No items to remove.");
     		return;
     	}
-    	
-
+/*
  * i updated this in regards to the changes i made, the person that is responsible for remove item should update
  * subtract, as this iterations hardware doesnt support it. i would suggest reading the Mass class.
- 
+ */
     // Retrieve details of the last added item
     	
     	long lastItemPrice = session.getPriceList().remove(session.getPriceList().size() - 1);
@@ -142,15 +119,12 @@ public class WeightDiscrepancy {
     	System.out.println("Last item removed. Updated expectedWeight: " + session.getExpectedWeight());
     	System.out.println("Updated total price: " + session.getTotalPrice());
 	}
-*/
 	
-	/*
 	public void removeLastItemWeight() {
 		Mass lastItemWeight = new Mass(session.getWeightList().get(-1).inGrams().doubleValue());
     	MassDifference dif = session.getExpectedWeight().difference(lastItemWeight);
     	session.setExpectedWeight(dif.abs());
 	}
-	*/
 
 	public boolean isWeightDiscrepancy() {
 		return weightDiscrepancy;
@@ -164,7 +138,7 @@ public class WeightDiscrepancy {
 		return weightEcxcess;
 	}
 
-	public void setWeightExcess(boolean weightEcxcess) {
+	public void setWeightEcxcess(boolean weightEcxcess) {
 		this.weightEcxcess = weightEcxcess;
 	}
 }
