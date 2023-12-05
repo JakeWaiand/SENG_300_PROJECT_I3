@@ -1,8 +1,13 @@
 package com.thelocalmarketplace.software.gui;
 
+
 import javax.swing.*;
 
+import com.thelocalmarketplace.hardware.Product;
 import com.thelocalmarketplace.software.AttendantControl;
+import com.thelocalmarketplace.software.InternalDatabase;
+import com.thelocalmarketplace.software.StartAttendantSession;
+import com.thelocalmarketplace.software.StartSession;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -13,13 +18,18 @@ public class AttendantStationGUI extends JFrame {
     private JButton searchButton;
     private JTextArea resultArea;
     private JButton weightDiscrepancyButton;
-
-    private AttendantControl attendantControl;
+    
+    private StartAttendantSession session;
+    private StartSession costumerSession1;
+    private StartSession costumerSession2;
+    private StartSession costumerSession3;
 
     // Constructor to initialize the GUI
-    public AttendantStationGUI(AttendantControl attendantControl) {
-        this.attendantControl = attendantControl;
-
+    public AttendantStationGUI(StartAttendantSession session) {
+        this.session = session;
+        costumerSession1 = session.getCostumerSession1();
+        costumerSession2 = session.getCostumerSession2();
+        costumerSession3 = session.getCostumerSession3();
         setTitle("Attendant Station");
         setSize(1280, 720);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -62,7 +72,7 @@ public class AttendantStationGUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 // Get search result from the text field and call attendantSearchItem method
                 String searchResult = searchField.getText();
-                attendantControl.attendantSearchItem(searchResult);
+                session.getATControl().attendantSearchItem(searchResult);
             }
         });
 
@@ -71,7 +81,7 @@ public class AttendantStationGUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Call sendWDMessage method when the button is clicked
-                attendantControl.sendWDMessage();
+                session.getATControl().sendWDMessage(); // this should be fixed.
                 showDecisionDialog();
             }
         });
@@ -84,7 +94,9 @@ public class AttendantStationGUI extends JFrame {
                 // Show a dialog to input item text
                 String itemText = JOptionPane.showInputDialog(AttendantStationGUI.this, "Enter item text:");
                 if (itemText != null) {
-                    attendantControl.addItemByText(itemText);
+                	Product product = InternalDatabase.internalDataBase_Description.get(itemText);
+                	Double weight = InternalDatabase.internalDataBase_weight.get(product);
+                    session.getCostumerSession1().getItemControl().addItemTextSearch(itemText,product, weight);
                 }
             }
         });
@@ -133,7 +145,7 @@ public class AttendantStationGUI extends JFrame {
 
         // Determine the decision based on the user's choice
         String decision = (choice == JOptionPane.YES_OPTION) ? "yes" : "no";
-        attendantControl.setWDDecision(decision);
+        session.getATControl().setWDDecision(decision);
     }
 
     // Placeholder method for enabling session (replace with actual functionality)
