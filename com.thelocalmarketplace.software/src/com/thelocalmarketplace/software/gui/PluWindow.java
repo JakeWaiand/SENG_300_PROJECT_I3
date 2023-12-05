@@ -1,18 +1,19 @@
-package com.thelocalmarketplace.software.gui;
+package com.thelocalmarketplace.software.GUI;
 
 import javax.swing.*;
 import java.awt.*;
-
-// import com.thelocalmarketplace.hardware.external.Pr;
-
-
+import com.thelocalmarketplace.hardware.external.ProductDatabases;
+import com.thelocalmarketplace.software.StartSession;
+import com.thelocalmarketplace.hardware.PLUCodedProduct;
+import com.thelocalmarketplace.hardware.PriceLookUpCode;
 
 
 public class PluWindow {
-
+	
+	
     private static JTextField inputField; // Text field for displaying the input
-
-    public static void open() {
+    
+    public static void open(StartSession session) {
         JFrame frame = new JFrame("Self Checkout System");
         frame.setSize(800, 600);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -57,15 +58,24 @@ public class PluWindow {
         JButton submitButton = new JButton("Submit");
         submitButton.addActionListener(e -> {
             // Handle submission
-            String pluCode = inputField.getText();
-            
+            String thePLUCode = inputField.getText();
+            PriceLookUpCode PLUCode = new PriceLookUpCode(thePLUCode);
+            try { 
+            	PLUCodedProduct product = ProductDatabases.PLU_PRODUCT_DATABASE.get(PLUCode);
+            	session.getItemControl().setPLUCode(PLUCode);
+            	
+            	
+            }
+            catch(Exception x) {
+            	System.out.print("not correct");
+            }
             
         });
 
         JButton backButton = new JButton("Back");
         backButton.addActionListener(e -> {
             frame.dispose(); // Close the PLU window
-            AddWindow.open(); // Open the AddWindow again
+            AddWindow.open(session); // Open the AddWindow again
         });
 
         // Add Submit and Back buttons
@@ -99,4 +109,3 @@ public class PluWindow {
         panel.add(button);
     }
 }
-

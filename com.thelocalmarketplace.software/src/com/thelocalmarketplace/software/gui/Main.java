@@ -1,12 +1,17 @@
-package com.thelocalmarketplace.software.gui;
+package com.thelocalmarketplace.software.GUI;
 import javax.swing.*;
+
+import com.jjjwelectronics.OverloadedDevice;
+import com.thelocalmarketplace.hardware.SelfCheckoutStationBronze;
+import com.thelocalmarketplace.software.StartSession;
+
 import java.awt.*;
 
 public class Main {
 
-
-    public static void main(String[] args) {
+    public static void main(String[] args) throws OverloadedDevice {
         // Create and set up the main window
+    	
         JFrame frame = new JFrame("Self Checkout Station");
         frame.setSize(800, 800);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -28,18 +33,25 @@ public class Main {
 
         // Start session button
         JButton startButton = new JButton("Start Session");
+        SelfCheckoutStationBronze station = new SelfCheckoutStationBronze();    
+      
+		StartSession session = new StartSession(station);
+		
+		
         startButton.setPreferredSize(new Dimension(150, 50));
         startButton.setMaximumSize(new Dimension(150, 50));
+        
         startButton.addActionListener(e -> {
             frame.dispose(); // Close the main window
-            AddWindow.open(); // Open the checkout window
+        
+            AddWindow.open(session); // Open the checkout window
         });
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.gridwidth = 2;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         frame.add(startButton, gbc);
-        
+
         // Display the window
         frame.setLocationRelativeTo(null); // Center the window
         frame.setVisible(true);
