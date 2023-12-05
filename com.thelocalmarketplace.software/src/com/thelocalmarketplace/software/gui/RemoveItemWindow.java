@@ -1,4 +1,4 @@
-package com.thelocalmarketplace.software.gui;
+package com.thelocalmarketplace.software.GUI;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -14,9 +14,11 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
+import com.thelocalmarketplace.software.StartSession;
+
 public class RemoveItemWindow {
 
-    public static void open() {
+    public static void open(StartSession session) {
         JFrame frame = new JFrame("Remove Item");
         frame.setSize(800, 600);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -43,7 +45,7 @@ public class RemoveItemWindow {
         JButton backButton = new JButton("Back");
         backButton.addActionListener(e -> {
             frame.dispose(); // Close the RemoveItemWindow
-            AddWindow.open(); // Open the AddWindow again
+            AddWindow.open(session); // Open the AddWindow again
         });
         gbc.gridx = 0;
         gbc.gridy = 2;
@@ -53,7 +55,7 @@ public class RemoveItemWindow {
         removeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Add your logic here for removing items
+                
                 JOptionPane.showMessageDialog(frame, "Item removed successfully!");
             }
         });
@@ -62,10 +64,4 @@ public class RemoveItemWindow {
         frame.setVisible(true);
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            // Run GUI construction in the Event-Dispatching Thread for thread safety
-            RemoveItemWindow.open();
-        });
-    }
 }

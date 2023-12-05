@@ -63,6 +63,8 @@ public class PluWindow {
             try { 
             	PLUCodedProduct product = ProductDatabases.PLU_PRODUCT_DATABASE.get(PLUCode);
             	session.getItemControl().setPLUCode(PLUCode);
+            	JOptionPane.showMessageDialog(frame, "Item has been added to the cart", "Adding Item",
+            			JOptionPane.INFORMATION_MESSAGE);
             	
             	
             }

@@ -1,4 +1,4 @@
-package com.thelocalmarketplace.software.gui;
+package com.thelocalmarketplace.software.GUI;
 
 import javax.swing.*;
 import java.awt.*;
@@ -6,37 +6,38 @@ import java.awt.event.ActionEvent;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.thelocalmarketplace.software.InternalDatabase;
+
 public class VisualCatalogue extends JPanel {
 
     private Map<String, Integer> itemsQuantity;
 
     public VisualCatalogue() {
-        super(new BorderLayout()); // Use BorderLayout for the main panel
+        super(new BorderLayout());
         setBackground(new Color(0x7293A0));
         itemsQuantity = new HashMap<>();
 
-        // Title label
         JLabel titleLabel = new JLabel("Self Checkout Station", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Serif", Font.BOLD, 24));
         titleLabel.setOpaque(true);
         titleLabel.setBackground(new Color(0x7293A0));
         titleLabel.setForeground(Color.WHITE);
-        this.add(titleLabel, BorderLayout.NORTH); // Add to NORTH region
+        this.add(titleLabel, BorderLayout.NORTH);
 
-        // Items panel in the center
-        JPanel itemsPanel = new JPanel(new GridLayout(0, 4, 5, 5)); // GridLayout for item panels
+        JPanel itemsPanel = new JPanel(new GridLayout(0, 4, 5, 5));
         itemsPanel.setBackground(new Color(0x7293A0));
-        String[] items = {"Milk", "Bread", "Cookie", "Candy"};
-        for (String item : items) {
-            JPanel itemPanel = createItemPanel(item);
+
+        // Use the internal database to get items information
+        for (String description : InternalDatabase.internalDataBase_Description.keySet()) {
+            JPanel itemPanel = createItemPanel(description);
             itemsPanel.add(itemPanel);
         }
-        this.add(itemsPanel, BorderLayout.CENTER); // Add to CENTER region
 
-        // Add item button at the bottom
+        this.add(itemsPanel, BorderLayout.CENTER);
+
         JButton addItemButton = new JButton("Add item");
         addItemButton.addActionListener(this::addItemAction);
-        this.add(addItemButton, BorderLayout.SOUTH); // Add to SOUTH region
+        this.add(addItemButton, BorderLayout.SOUTH);
     }
 
     private JPanel createItemPanel(String itemName) {
@@ -69,19 +70,17 @@ public class VisualCatalogue extends JPanel {
 
     private void updateQuantity(String itemName, int delta, JLabel quantityLabel) {
         int currentQuantity = itemsQuantity.get(itemName);
-        int newQuantity = Math.max(0, currentQuantity + delta); // Prevent negative quantities
+        int newQuantity = Math.max(0, currentQuantity + delta);
         itemsQuantity.put(itemName, newQuantity);
         quantityLabel.setText(String.valueOf(newQuantity));
     }
 
     private void addItemAction(ActionEvent e) {
+        // Replace "session" with the appropriate variable or parameter
         SwingUtilities.getWindowAncestor(this).dispose();
-    
-    // Open the AddWindow
-        AddWindow.open();
+        // AddWindow.open(session);
     }
 
-    // Method to open the visual catalog window
     public static void open() {
         JFrame frame = new JFrame("Visual Catalogue");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -92,6 +91,3 @@ public class VisualCatalogue extends JPanel {
         frame.setVisible(true);
     }
 }
-
-
-
