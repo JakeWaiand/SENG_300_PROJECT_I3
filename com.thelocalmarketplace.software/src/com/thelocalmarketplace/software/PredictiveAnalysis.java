@@ -1,3 +1,5 @@
+package com.thelocalmarketplace.software;
+
 public class PredictiveAnalysis {
     private DataCollector dataCollector;
     private PredictiveModel predictiveModel;
