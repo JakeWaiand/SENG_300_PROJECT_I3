@@ -275,3 +275,57 @@ public class ItemProcessingControl {
 	}
 
 }
+
+/**
+ * This class deals with what happens when a customer chooses not to put an item
+ * in the bagging area.
+ */
+public class HandleBulkyItem {
+
+    public static void handleNoBaggingRequest(AbstractSelfCheckoutStation station) {
+        if (isSessionActive() && customerSignalsNoBagging()) {
+            blockStation(station);
+            notifyAttendant();
+            approveByAttendant();
+            unblockStation(station);
+        }
+    }
+
+    private static boolean isSessionActive() {
+        // Simulate session being active
+        return StartSession.getInSession();
+    }
+
+    private static boolean customerSignalsNoBagging() {
+        // Simulate customer signaling not to bag
+        return true;
+    }
+
+    private static void blockStation(AbstractSelfCheckoutStation station) {
+        station.getScanningArea().disable();
+        station.getCardReader().disable();
+        station.getMainScanner().disable();
+        station.getHandheldScanner().disable();
+        station.getBanknoteInput().disable();
+        station.getCoinSlot().disable();
+    }
+
+    private static void notifyAttendant() {
+        System.out.println("System: Requesting Attendant Assistance. Customer avoids bagging.");
+    }
+
+    private static void approveByAttendant() {
+        System.out.println("Attendant: Approval granted. Customer avoids bagging.");
+    }
+
+    private static void unblockStation(AbstractSelfCheckoutStation station) {
+        station.getScanningArea().enable();
+        station.getCardReader().enable();
+        station.getMainScanner().enable();
+        station.getHandheldScanner().enable();
+        station.getBanknoteInput().enable();
+        station.getCoinSlot().enable();
+
+        System.out.println("System: Station unblocked. Customer can continue.");
+    }
+}
