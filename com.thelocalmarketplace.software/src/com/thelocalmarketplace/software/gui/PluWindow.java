@@ -1,8 +1,10 @@
-package com.thelocalmarketplace.software.gui;
+package com.thelocalmarketplace.software.GUI;
 
 import javax.swing.*;
 import java.awt.*;
-
+import com.thelocalmarketplace.hardware.external.ProductDatabases;
+import com.thelocalmarketplace.hardware.PLUCodedProduct;
+import com.thelocalmarketplace.hardware.PriceLookUpCode;
 
 
 public class PluWindow {
@@ -55,8 +57,14 @@ public class PluWindow {
         submitButton.addActionListener(e -> {
             // Handle submission
             String pluCode = inputField.getText();
-            System.out.println("PLU Code: " + pluCode);
-            // TODO: Implement PLU code submission logic
+            try { 
+            	PLUCodedProduct product = ProductDatabases.PLU_PRODUCT_DATABASE.get(pluCode);
+            	
+            }
+            catch(Exception x) {
+            	System.out.print("not correct");
+            }
+            
         });
 
         JButton backButton = new JButton("Back");
@@ -96,4 +104,3 @@ public class PluWindow {
         panel.add(button);
     }
 }
-
