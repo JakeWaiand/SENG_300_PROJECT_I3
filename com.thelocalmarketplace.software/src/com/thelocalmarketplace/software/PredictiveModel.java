@@ -24,24 +24,23 @@
  */
 
 package com.thelocalmarketplace.software;
-public class StationControl {
-    private boolean isEnabled;
 
-    public StationControl() {
-        isEnabled = false; // Stations start as disabled
+import java.util.List;
+
+public class PredictiveModel {
+    
+    public boolean predictLowInk(List<InkUsageData> inkUsageData) {
+        // Implements the prediction logic for low ink
     }
 
-    public void enableStation() {
-        isEnabled = true;
-        System.out.println("Station enabled."); 
+    public boolean predictLowPaper(List<PaperUsageData> paperUsageData) {
+        // Implements the prediction logic for low paper
     }
 
-    public void disableStation() {
-        isEnabled = false;
-        System.out.println("Station disabled.");
+    public boolean predictLowBanknotes(List<BanknoteData> banknoteData) {
+        // Implements the prediction logic for low banknotes
     }
 
-    public boolean isStationEnabled() {
-        return isEnabled;
+    public boolean predictLowCoins(List<CoinData> coinData) {
+        // Implements the prediction logic for low coins
     }
-}
