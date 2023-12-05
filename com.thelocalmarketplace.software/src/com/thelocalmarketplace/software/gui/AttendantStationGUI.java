@@ -1,14 +1,11 @@
 package com.thelocalmarketplace.software.gui;
 
-
 import javax.swing.*;
-
 import com.thelocalmarketplace.hardware.Product;
 import com.thelocalmarketplace.software.AttendantControl;
 import com.thelocalmarketplace.software.InternalDatabase;
 import com.thelocalmarketplace.software.StartAttendantSession;
 import com.thelocalmarketplace.software.StartSession;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,18 +15,14 @@ public class AttendantStationGUI extends JFrame {
     private JButton searchButton;
     private JTextArea resultArea;
     private JButton weightDiscrepancyButton;
-    
+
     private StartAttendantSession session;
     private StartSession costumerSession1;
-    private StartSession costumerSession2;
-    private StartSession costumerSession3;
 
     // Constructor to initialize the GUI
     public AttendantStationGUI(StartAttendantSession session) {
         this.session = session;
         costumerSession1 = session.getCostumerSession1();
-        costumerSession2 = session.getCostumerSession2();
-        costumerSession3 = session.getCostumerSession3();
         setTitle("Attendant Station");
         setSize(1280, 720);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -94,9 +87,9 @@ public class AttendantStationGUI extends JFrame {
                 // Show a dialog to input item text
                 String itemText = JOptionPane.showInputDialog(AttendantStationGUI.this, "Enter item text:");
                 if (itemText != null) {
-                	Product product = InternalDatabase.internalDataBase_Description.get(itemText);
-                	Double weight = InternalDatabase.internalDataBase_weight.get(product);
-                    session.getCostumerSession1().getItemControl().addItemTextSearch(itemText,product, weight);
+                    Product product = InternalDatabase.internalDataBase_Description.get(itemText);
+                    Double weight = InternalDatabase.internalDataBase_weight.get(product);
+                    session.getCostumerSession1().getItemControl().addItemTextSearch(itemText, product, weight);
                 }
             }
         });
@@ -131,22 +124,26 @@ public class AttendantStationGUI extends JFrame {
         add(additionalButtonsPanel, BorderLayout.WEST);
     }
 
-    // Show a dialog for the attendant to make a decision on weight discrepancy
+ // Show a dialog for the attendant to make a decision on weight discrepancy
     private void showDecisionDialog() {
-        String[] options = {"Yes", "No"};
-        int choice = JOptionPane.showOptionDialog(this,
-                "Weight Discrepancy Detected. Approve?",
-                "Weight Discrepancy",
-                JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE,
-                null,
-                options,
-                options[0]);
+        if (!session.getATControl().getWDDecision()) { // Check if the decision is not already set
+            String[] options = {"Yes", "No"};
+            int choice = JOptionPane.showOptionDialog(this,
+                    "Weight Discrepancy Detected. Approve?",
+                    "Weight Discrepancy",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,
+                    options,
+                    options[0]);
 
-        // Determine the decision based on the user's choice
-        String decision = (choice == JOptionPane.YES_OPTION) ? "yes" : "no";
-        session.getATControl().setWDDecision(decision);
+            // Determine the decision based on the user's choice
+            String decision = (choice == JOptionPane.YES_OPTION) ? "yes" : "no";
+            session.getATControl().setWDDecision(decision);
+            System.out.println(decision);
+        }
     }
+
 
     // Placeholder method for enabling session (replace with actual functionality)
     private void enableSession() {
@@ -169,15 +166,29 @@ public class AttendantStationGUI extends JFrame {
         JOptionPane.showMessageDialog(this, "Weight Discrepancy Alarm!");
     }
 
-    // Main method to run the GUI
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                AttendantControl attendantControl = new AttendantControl();
-                AttendantStationGUI attendantStationGUI = new AttendantStationGUI(attendantControl);
+                // Replace these parameters with the actual ones required by StartSession
+                String customerName1 = "Customer1";
+                int customerId1 = 1;
+                // ... (provide other required parameters)
+
+                StartSession costumerSession1 = new StartSession(customerName1, customerId1 /*, other parameters*/);
+
+                // Repeat the process for costumerSession2 and costumerSession3
+                // ...
+
+                StartAttendantSession attendantSession = new StartAttendantSession(costumerSession1);
+                AttendantControl attendantControl = attendantSession.getATControl();
+
+                AttendantStationGUI attendantStationGUI = new AttendantStationGUI(attendantSession);
                 attendantControl.setAttendantStationGUI(attendantStationGUI); // Set the GUI reference
+
+                // Note: Additional code here should not create a new AttendantStationGUI instance
             }
         });
     }
+
 }
