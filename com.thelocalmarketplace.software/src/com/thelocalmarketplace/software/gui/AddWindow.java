@@ -8,7 +8,7 @@ public class AddWindow extends JPanel {
 
     public static void open() {
         JFrame frame = new JFrame("Self Checkout Station");
-        frame.setSize(800, 600);
+        frame.setSize(1000, 600);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new GridBagLayout());
         frame.getContentPane().setBackground(new Color(0x7293A0));
@@ -38,6 +38,9 @@ public class AddWindow extends JPanel {
                 } else if ("Purchase Bags".equals(text)) {
                     frame.dispose(); // Close the AddWindow
                     PurchaseBagsWindow.open(); // Open the PurchaseBagsWindow
+                } else if ("Visual Catalogue".equals(text)) {
+                    frame.dispose(); // Close the AddWindow
+                    VisualCatalogue.open();
                 } else if ("Add Own Bags".equals(text)) {
                     frame.dispose(); // Close the AddWindow
                     AddOwnBagsWindow.open(); // Open the AddOwnBagsWindow
