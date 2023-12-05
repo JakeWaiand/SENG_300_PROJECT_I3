@@ -3,6 +3,8 @@ package com.thelocalmarketplace.software.gui;
 import javax.swing.*;
 import java.awt.*;
 
+
+
 public class PluWindow {
 
     private static JTextField inputField; // Text field for displaying the input
@@ -94,3 +96,4 @@ public class PluWindow {
         panel.add(button);
     }
 }
+
