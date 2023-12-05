@@ -9,13 +9,10 @@ public class StartAttendantSession {
 	private StartSession costumerSession2;  // three different sessions
 	private StartSession costumerSession3;
 	
-	StartAttendantSession(StartSession costumerSession1, StartSession costumerSession2,
-			StartSession costumerSession3) {
+	public StartAttendantSession(StartSession costumerSession1) {
 		this.setCostumerSession1(costumerSession1);
-		this.setCostumerSession2(costumerSession2);
-		this.setCostumerSession3(costumerSession3);
-		
-		attendantGUI = new AttendantStationGUI(this);
+
+		setAttendantGUI(new AttendantStationGUI(this));
 		ATcontrol = new AttendantControl(this);
 		
 		
@@ -52,6 +49,14 @@ public class StartAttendantSession {
 
 	public void setCostumerSession3(StartSession costumerSession3) {
 		this.costumerSession3 = costumerSession3;
+	}
+
+	public AttendantStationGUI getAttendantGUI() {
+		return attendantGUI;
+	}
+
+	public void setAttendantGUI(AttendantStationGUI attendantGUI) {
+		this.attendantGUI = attendantGUI;
 	}
 	
 }
