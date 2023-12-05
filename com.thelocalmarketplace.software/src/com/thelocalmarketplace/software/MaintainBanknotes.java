@@ -1,26 +1,39 @@
+/*
+ * Dongwen Tian			 30181813
+ *Fardin Rahman Sami             30172916
+ * Kenny Zeng 			 30151985
+ * Tahamina Chowdhury 	         30140920
+ * Sneh Patel 			 30086076
+ * Jake Waiand 			 30179510
+ * Roko Condic 			 30185671
+ * Farouq Arafeh		 30158214
+ * K M Chisty 			 30145123
+ * Mohammad Soomro 		 30130440
+ * Daniel Adebisi 		 30179418
+ * Eyuel Kahsay 		 30181884
+ * Almik Biju 			 30170902
+ * Kourosh Malayeri 	         30174987
+ * Hasan Qasim 			 30164530
+ * Ariba Noman 			 30111428
+ * Kyuyop (Andrew) Park          10046592
+ * Jiaqi Wu 			 30172397
+ * Ludovik Chojnacki 	         30178890
+ * Muhammad Niazi 		 30177775
+ * Firdovsi Aliyev 		 30178471
+ * Ratul Chakraborty	         30194422
+ */
+
 package com.thelocalmarketplace.software;
 
 import java.util.List;
 
 import com.tdc.CashOverloadException;
 import com.tdc.banknote.Banknote;
-import com.tdc.coin.Coin;
 import com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation;
-import com.thelocalmarketplace.hardware.SelfCheckoutStationBronze;
-import com.thelocalmarketplace.hardware.SelfCheckoutStationSilver;
 
 import ca.ucalgary.seng300.simulation.InvalidStateSimulationException;
-import ca.ucalgary.seng300.simulation.SimulationException;
-
-import com.thelocalmarketplace.hardware.SelfCheckoutStationGold;
 
 public class MaintainBanknotes {
-
-	private final int GOLD = 2;
-	private final int SILVER = 1;
-	private final int BRONZE = 0;
-	
-	private int stationGrade;
 	
 	private AbstractSelfCheckoutStation station;
 	
@@ -69,6 +82,7 @@ public class MaintainBanknotes {
 			
 			for (int i = 0; i < returnQuantity; i++) {
 				station.getBanknoteStorage().load(removedBanknotes.get(removedBanknotes.size() - 1));
+				removedBanknotes.remove(removedBanknotes.size() - 1);
 			}
 		} else if (quantity > station.getBanknoteStorage().getBanknoteCount()) {
 			throw new InvalidStateSimulationException("Cannot take more coins out than are in the storage unit.");

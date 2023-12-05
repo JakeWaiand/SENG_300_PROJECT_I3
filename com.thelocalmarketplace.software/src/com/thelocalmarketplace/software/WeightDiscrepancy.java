@@ -22,8 +22,6 @@ Yasna Naseri  30182402
 Muhammad Niazi 30177775
 Yasir Hussain 30195085
 Almik biju 30170902 
-
-Dongwen Tian 30181813
 */
 
 public class WeightDiscrepancy { 
@@ -61,16 +59,17 @@ public class WeightDiscrepancy {
 			set_weightDiscrepancy(true);
 			System.out.println("please put the item in the bagging area.");
 			session.getAttendantControl().sendWDMessage(); 
-	    	if (session.getAttendantControl().getWDDecision() == true) // if the attandant approves the 
-	    		removeLastItemWeight();								// WD then the last items weight is not calculated. 
-	    	else
-	    		System.out.println("please wait for assistance"); // gui
+	    	while (session.getAttendantControl().getWDDecision() == false) // if the attandant approves the 
+	    		System.out.println("please wait for assistance");
+	    	removeLastItemWeight();								// WD then the last items weight is not calculated. 
+	    	
+	    		 
 		}
 		 	
 	}
 	
 	public void exceedWeightEvaluate() {
-		setWeightExcess(true);
+		setWeightEcxcess(true);
 		while(isWeightEcxcess()) {
 			System.out.println("the scale has exceeded its limit. please remove the last item you added.");
 			
@@ -139,7 +138,7 @@ public class WeightDiscrepancy {
 		return weightEcxcess;
 	}
 
-	public void setWeightExcess(boolean weightEcxcess) {
+	public void setWeightEcxcess(boolean weightEcxcess) {
 		this.weightEcxcess = weightEcxcess;
 	}
 }
